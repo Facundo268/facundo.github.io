@@ -7,6 +7,7 @@
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #ff0a0a 0%, #cc0000 50%, #ff0a0a 100%);
@@ -59,7 +60,6 @@
         .logo-text {
             font-size: 1.5rem;
             font-weight: 700;
-            color: #fff;
         }
 
         nav ul {
@@ -80,8 +80,8 @@
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s;
             border: none;
+            transition: 0.3s;
         }
 
         .btn-login {
@@ -92,7 +92,6 @@
         .btn-register {
             background: transparent;
             border: 2px solid #fff;
-            color: #fff;
         }
 
         .btn-admin {
@@ -102,22 +101,21 @@
         }
 
         .btn-logout {
-            background: #f44336;
-            color: #fff;
+            background: #e53935;
             display: none;
         }
 
-        /* HERO */
         .hero {
             padding: 140px 5% 60px;
             text-align: center;
             background: linear-gradient(135deg, #ff1a1a 0%, #ff4444 100%);
         }
 
-        .hero h1 { font-size: 2.5rem; }
-        .hero p { font-size: 1.1rem; }
+        .hero h1 {
+            font-size: 2.4rem;
+            margin-bottom: 1rem;
+        }
 
-        /* CATEGORÍAS */
         .categories {
             max-width: 1400px;
             margin: 0 auto;
@@ -129,13 +127,14 @@
         }
 
         .category-btn {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255,255,255,0.9);
             color: #ff0a0a;
-            border: 2px solid #fff;
             padding: 0.8rem 2rem;
             border-radius: 10px;
-            cursor: pointer;
+            border: 2px solid #fff;
             font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
         }
 
         .category-btn.active {
@@ -143,7 +142,6 @@
             transform: scale(1.05);
         }
 
-        /* FILTROS */
         .filter-section {
             max-width: 1400px;
             margin: 1rem auto 0;
@@ -163,7 +161,6 @@
             color: #fff;
             padding: 0.6rem 1.5rem;
             border-radius: 8px;
-            cursor: pointer;
         }
 
         .filter-btn.active {
@@ -171,7 +168,6 @@
             color: #ff0a0a;
         }
 
-        /* PRODUCTOS */
         .products {
             max-width: 1400px;
             margin: 0 auto;
@@ -186,12 +182,21 @@
             border-radius: 15px;
             border: 2px solid #333;
             overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: #ff0a0a;
         }
 
         .product-image {
             height: 220px;
-            background: #1a1a1a;
+            background: #1b1b1b;
             border-bottom: 3px solid #ff0a0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .product-image img {
@@ -200,59 +205,123 @@
             object-fit: cover;
         }
 
+        .product-logo {
+            width: 70px;
+            height: 70px;
+            background: #fff;
+            color: #ff0a0a;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            font-weight: 900;
+            transform: rotate(-5deg);
+            box-shadow: 0 6px 20px rgba(255,0,0,0.4);
+        }
+
         .product-content {
             padding: 1.5rem;
         }
 
-        .product-title { font-size: 1.3rem; }
-        .product-description { color: #aaa; }
-        .price { font-size: 1.6rem; font-weight: 700; }
+        .product-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.3rem;
+        }
 
-        /* FOOTER */
+        .product-description {
+            color: #aaa;
+            margin-bottom: 1rem;
+        }
+
+        .price {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .btn-buy {
+            background: #ff0a0a;
+            padding: 0.6rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #fff;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .btn-buy:hover {
+            background: #ff4444;
+        }
+
         footer {
             background: #ff0a0a;
             padding: 2rem 5%;
             text-align: center;
             margin-top: 3rem;
+            color: #fff;
             border-top: 2px solid #fff;
-        }
-
-        /* -------------------------
-           🔥 CSS DE LOS MODALES (FALTABA)
-        --------------------------*/
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            backdrop-filter: blur(4px);
-            background-color: rgba(0,0,0,0.6);
-        }
-
-        .modal-content {
-            background: #202020;
-            margin: 8% auto;
-            padding: 25px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 420px;
-            color: white;
-            border: 2px solid #ff0a0a;
-        }
-
-        .close-modal {
-            float: right;
-            font-size: 28px;
-            cursor: pointer;
         }
     </style>
 </head>
-
 <body>
+
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">XR</div>
+                <span class="logo-text">XR Store</span>
+            </div>
+
+            <ul>
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#productos">Productos</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+
+                <li><button class="btn-register" id="registerBtn">Registrarse</button></li>
+                <li><button class="btn-login" id="loginBtn">Iniciar Sesión</button></li>
+                <li><button class="btn-admin" id="adminBtn">Panel Admin</button></li>
+                <li><button class="btn-logout" id="logoutBtn">Cerrar Sesión</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero" id="inicio">
+        <h1>Mapeos Premium para tu Servidor</h1>
+        <p>Los mejores mapeos personalizados para MTA, FiveM y SAMP</p>
+    </section>
+    <section class="categories">
+        <button class="category-btn active" data-category="all">Todos</button>
+        <button class="category-btn" data-category="mta">MTA</button>
+        <button class="category-btn" data-category="fivem">FiveM</button>
+        <button class="category-btn" data-category="samp">SAMP</button>
+        <button class="category-btn" data-category="anticheat">AntiCheat</button>
+    </section>
+
+    <section id="mtaFilters" class="filter-section">
+        <button class="filter-btn active" data-filter="all">Todos</button>
+        <button class="filter-btn" data-filter="scripts">Scripts</button>
+        <button class="filter-btn" data-filter="mapeos">Mapeos</button>
+    </section>
+
+    <section id="fivemFilters" class="filter-section">
+        <button class="filter-btn active" data-filter="all">Todos</button>
+        <button class="filter-btn" data-filter="scripts">Scripts</button>
+        <button class="filter-btn" data-filter="mapeos">Mapeos</button>
+    </section>
+
+    <section id="sampFilters" class="filter-section">
+        <button class="filter-btn active" data-filter="all">Todos</button>
+        <button class="filter-btn" data-filter="scripts">Scripts</button>
+        <button class="filter-btn" data-filter="mapeos">Mapeos</button>
+    </section>
+
+    <section class="products" id="productos"></section>
+
+    <footer id="contacto">
+        <p>© 2024 XR Store. Todos los derechos reservados.</p>
+    </footer>
+
     <!-- Modal Registro -->
     <div id="registerModal" class="modal">
         <div class="modal-content">
@@ -266,13 +335,11 @@
                 <div class="form-group">
                     <label>Usuario</label>
                     <input type="text" id="regUsername" required minlength="3">
-                    <small>Mínimo 3 caracteres</small>
                 </div>
 
                 <div class="form-group">
                     <label>Contraseña</label>
                     <input type="password" id="regPassword" required minlength="6">
-                    <small>Mínimo 6 caracteres</small>
                 </div>
 
                 <div class="form-group">
@@ -300,12 +367,12 @@
             <form id="loginForm">
                 <div class="form-group">
                     <label>Usuario</label>
-                    <input type="text" id="username" required>
+                    <input type="text" id="username">
                 </div>
 
                 <div class="form-group">
                     <label>Contraseña</label>
-                    <input type="password" id="password" required>
+                    <input type="password" id="password">
                 </div>
 
                 <button type="submit" class="btn-submit">Entrar</button>
@@ -317,35 +384,36 @@
         </div>
     </div>
 
-    <!-- Modal Panel Admin -->
+    <!-- Modal Admin -->
     <div id="adminModal" class="modal">
         <div class="modal-content admin-panel">
             <span class="close-modal" id="closeAdmin">&times;</span>
             <h2>Panel de Administración</h2>
-            
+
             <div class="admin-tabs">
                 <button class="admin-tab active" data-tab="users">Usuarios</button>
-                <button class="admin-tab" data-tab="products">Gestionar Productos</button>
-                <button class="admin-tab" data-tab="addProduct">Agregar Producto</button>
+                <button class="admin-tab" data-tab="products">Productos</button>
+                <button class="admin-tab" data-tab="addProduct">Agregar</button>
             </div>
 
-            <!-- Usuarios -->
+            <!-- TAB USUARIOS -->
             <div id="usersTab" class="admin-section active">
-                <h3 style="color: #fff; margin-bottom: 1rem;">Usuarios Registrados</h3>
+                <h3 style="color:#fff;margin-bottom:10px;">Usuarios registrados</h3>
                 <div id="usersList" class="user-list"></div>
             </div>
 
-            <!-- Productos -->
+            <!-- TAB PRODUCTOS -->
             <div id="productsTab" class="admin-section">
-                <h3 style="color: #fff; margin-bottom: 1rem;">Productos Disponibles</h3>
+                <h3 style="color:#fff;margin-bottom:10px;">Lista de productos</h3>
                 <div id="productsList" class="product-list"></div>
             </div>
 
-            <!-- Agregar Producto -->
+            <!-- TAB AGREGAR PRODUCTO -->
             <div id="addProductTab" class="admin-section">
-                <h3 style="color: #fff; margin-bottom: 1rem;">Agregar Nuevo Producto</h3>
+                <h3 style="color:#fff;margin-bottom:10px;">Agregar producto</h3>
 
                 <form id="addProductForm">
+
                     <div class="form-group">
                         <label>Título del Producto</label>
                         <input type="text" id="productTitle" required>
@@ -357,14 +425,13 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Precio (ejemplo: $10.00 o GRATIS)</label>
-                        <input type="text" id="productPrice" required placeholder="$10.00">
+                        <label>Precio</label>
+                        <input type="text" id="productPrice" required>
                     </div>
 
                     <div class="form-group">
-                        <label>URL de la Imagen</label>
-                        <input type="url" id="productImage" placeholder="https://ejemplo.com/imagen.jpg">
-                        <small>Deja vacío para usar el logo XR por defecto</small>
+                        <label>URL Imagen</label>
+                        <input type="url" id="productImage">
                     </div>
 
                     <div class="form-group">
@@ -386,9 +453,11 @@
                         </select>
                     </div>
 
-                    <button type="submit" class="btn-submit">Agregar Producto</button>
+                    <button type="submit" class="btn-submit">Agregar</button>
+
                 </form>
             </div>
+
         </div>
     </div>
 
@@ -417,8 +486,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label>URL de la Imagen</label>
-                    <input type="url" id="editProductImage" placeholder="https://ejemplo.com/imagen.jpg">
+                    <label>URL Imagen</label>
+                    <input type="url" id="editProductImage">
                 </div>
 
                 <div class="form-group">
@@ -458,7 +527,7 @@ function getFromStorage(key) {
 }
 
 /* ------------------------------
-    INICIALIZACIÓN DE DATOS
+    INICIALIZACIÓN
 --------------------------------*/
 let users = getFromStorage('xrstore_users');
 let products = getFromStorage('xrstore_products');
@@ -486,14 +555,14 @@ if (!products) {
 
         { title: 'Sistema de Facciones', description: 'Sistema completo de facciones', price: '$19.00', category: 'samp', type: 'scripts', image: '' },
 
-        { title: 'AntiCheat Pro', description: 'AntiCheat Avanzado', price: '$30.00', category: 'anticheat', type: 'anticheat', image: '' }
+        { title: 'AntiCheat Pro', description: 'AntiCheat avanzado', price: '$30.00', category: 'anticheat', type: 'anticheat', image: '' }
     ];
 
     saveToStorage("xrstore_products", products);
 }
 
 /* ------------------------------
-    RECUPERAR SESIÓN
+    SESIÓN GUARDADA
 --------------------------------*/
 let session = getFromStorage("xrstore_session");
 
@@ -506,15 +575,14 @@ if (session) {
 }
 
 /* ------------------------------
-    UI
+    ACTUALIZACIÓN DE UI
 --------------------------------*/
 function updateUIForLoggedInUser() {
     document.getElementById("loginBtn").style.display = "none";
     document.getElementById("registerBtn").style.display = "none";
 
-    const logoutBtn = document.getElementById("logoutBtn");
-    logoutBtn.style.display = "block";
-    logoutBtn.textContent = currentUser.username;
+    document.getElementById("logoutBtn").style.display = "block";
+    document.getElementById("logoutBtn").textContent = currentUser.username;
 
     if (currentUser.role === "admin") {
         document.getElementById("adminBtn").style.display = "block";
@@ -529,7 +597,7 @@ function updateUIForLoggedOutUser() {
 }
 
 /* ------------------------------
-    MOSTRAR PRODUCTOS
+    RENDER PRODUCTOS
 --------------------------------*/
 let currentCategory = "all";
 let currentFilter = "all";
@@ -539,9 +607,9 @@ function renderProducts() {
     container.innerHTML = "";
 
     const filtered = products.filter(p => {
-        const matchCategory = currentCategory === "all" || p.category === currentCategory;
-        const matchFilter = currentFilter === "all" || p.type === currentFilter;
-        return matchCategory && matchFilter;
+        const c = currentCategory === "all" || p.category === currentCategory;
+        const f = currentFilter === "all" || p.type === currentFilter;
+        return c && f;
     });
 
     filtered.forEach(product => {
@@ -550,7 +618,7 @@ function renderProducts() {
 
         const img = product.image.trim() !== ''
             ? `<div class="product-image"><img src="${product.image}" /></div>`
-            : `<div class="product-image"><img src="https://via.placeholder.com/350x220/111/fff?text=XR" /></div>`;
+            : `<div class="product-image"><div class="product-logo">XR</div></div>`;
 
         card.innerHTML = `
             ${img}
@@ -571,7 +639,7 @@ function renderProducts() {
 renderProducts();
 
 /* ------------------------------
-    LOGIN (FUNCIONANDO)
+    LOGIN FUNCIONAL
 --------------------------------*/
 document.getElementById("loginForm").onsubmit = function(e) {
     e.preventDefault();
@@ -591,7 +659,7 @@ document.getElementById("loginForm").onsubmit = function(e) {
     saveToStorage("xrstore_session", { username: user.username });
 
     updateUIForLoggedInUser();
-    loginModal.style.display = "none";
+    document.getElementById("loginModal").style.display = "none";
 };
 
 /* ------------------------------
@@ -631,7 +699,7 @@ document.getElementById("registerForm").onsubmit = function(e) {
     setTimeout(() => {
         registerModal.style.display = "none";
         loginModal.style.display = "block";
-    }, 1200);
+    }, 1500);
 };
 
 /* ------------------------------
@@ -644,7 +712,7 @@ document.getElementById("logoutBtn").onclick = () => {
 };
 
 /* ------------------------------
-    PANEL ADMIN
+    ABRIR PANEL ADMIN
 --------------------------------*/
 document.getElementById("adminBtn").onclick = () => {
     loadUsersList();
@@ -653,7 +721,7 @@ document.getElementById("adminBtn").onclick = () => {
 };
 
 /* ------------------------------
-    LISTA USUARIOS
+    LISTA DE USUARIOS
 --------------------------------*/
 function loadUsersList() {
     const container = document.getElementById("usersList");
@@ -664,67 +732,191 @@ function loadUsersList() {
         div.className = "user-item";
 
         div.innerHTML = `
-            <strong style="color:white">${user.username}</strong>
-            <span class="user-role" style="padding:5px 10px;border-radius:6px;background:${user.role === 'admin' ? '#ff0a0a':'#aaa'}">
+            <strong>${user.username}</strong>
+            <span class="user-role" 
+                style="padding:5px;background:${user.role==='admin'?'#ff0a0a':'#888'};">
                 ${user.role.toUpperCase()}
             </span>
         `;
 
+        let actions = document.createElement("div");
+
+        if (currentUser.role === "admin" && currentUser.username !== user.username) {
+            
+            if (user.role === "user") {
+                let promote = document.createElement("button");
+                promote.textContent = "Hacer Admin";
+                promote.onclick = () => {
+                    users[index].role = "admin";
+                    saveToStorage("xrstore_users", users);
+                    loadUsersList();
+                };
+                actions.appendChild(promote);
+            }
+
+            if (user.role === "admin") {
+                let demote = document.createElement("button");
+                demote.textContent = "Quitar Admin";
+                demote.onclick = () => {
+                    users[index].role = "user";
+                    saveToStorage("xrstore_users", users);
+                    loadUsersList();
+                };
+                actions.appendChild(demote);
+            }
+
+            let del = document.createElement("button");
+            del.textContent = "Eliminar";
+            del.onclick = () => {
+                if (confirm("¿Eliminar usuario?")) {
+                    users.splice(index, 1);
+                    saveToStorage("xrstore_users", users);
+                    loadUsersList();
+                }
+            };
+            actions.appendChild(del);
+        }
+
+        div.appendChild(actions);
         container.appendChild(div);
     });
 }
 
 /* ------------------------------
-    LISTA PRODUCTOS
+    LISTA DE PRODUCTOS (ADMIN)
 --------------------------------*/
 function loadProductsList() {
     const container = document.getElementById("productsList");
     container.innerHTML = "";
 
     products.forEach((p, index) => {
-        let item = document.createElement("div");
+        const item = document.createElement("div");
         item.className = "product-item";
 
         item.innerHTML = `
-            <strong style="color:white">${p.title}</strong>
-            <p style="color:#aaa">${p.description}</p>
+            <strong>${p.title}</strong>
+            <p>${p.description}</p>
             <p style="color:#ff0a0a">${p.price}</p>
         `;
 
+        let actions = document.createElement("div");
+
+        let edit = document.createElement("button");
+        edit.textContent = "Editar";
+        edit.onclick = () => openEditProductModal(index);
+
+        let del = document.createElement("button");
+        del.textContent = "Eliminar";
+        del.onclick = () => {
+            if (confirm("¿Eliminar producto?")) {
+                products.splice(index, 1);
+                saveToStorage("xrstore_products", products);
+                loadProductsList();
+                renderProducts();
+            }
+        };
+
+        actions.appendChild(edit);
+        actions.appendChild(del);
+
+        item.appendChild(actions);
         container.appendChild(item);
     });
 }
 
 /* ------------------------------
+    ABRIR MODAL EDITAR
+--------------------------------*/
+function openEditProductModal(index) {
+    const p = products[index];
+
+    document.getElementById("editProductIndex").value = index;
+    document.getElementById("editProductTitle").value = p.title;
+    document.getElementById("editProductDescription").value = p.description;
+    document.getElementById("editProductPrice").value = p.price;
+    document.getElementById("editProductImage").value = p.image;
+    document.getElementById("editProductCategory").value = p.category;
+    document.getElementById("editProductType").value = p.type;
+
+    editProductModal.style.display = "block";
+}
+
+/* ------------------------------
+    GUARDAR PRODUCTO EDITADO
+--------------------------------*/
+document.getElementById("editProductForm").onsubmit = function(e) {
+    e.preventDefault();
+
+    let index = parseInt(document.getElementById("editProductIndex").value);
+
+    products[index] = {
+        title: document.getElementById("editProductTitle").value,
+        description: document.getElementById("editProductDescription").value,
+        price: document.getElementById("editProductPrice").value,
+        image: document.getElementById("editProductImage").value,
+        category: document.getElementById("editProductCategory").value,
+        type: document.getElementById("editProductType").value
+    };
+
+    saveToStorage("xrstore_products", products);
+
+    editProductModal.style.display = "none";
+
+    loadProductsList();
+    renderProducts();
+};
+
+/* ------------------------------
+    AGREGAR PRODUCTO
+--------------------------------*/
+document.getElementById("addProductForm").onsubmit = function(e) {
+    e.preventDefault();
+
+    let newProduct = {
+        title: document.getElementById("productTitle").value,
+        description: document.getElementById("productDescription").value,
+        price: document.getElementById("productPrice").value,
+        image: document.getElementById("productImage").value,
+        category: document.getElementById("productCategory").value,
+        type: document.getElementById("productType").value
+    };
+
+    products.push(newProduct);
+    saveToStorage("xrstore_products", products);
+
+    loadProductsList();
+    renderProducts();
+
+    alert("Producto agregado con éxito");
+};
+
+/* ------------------------------
     MODALES
 --------------------------------*/
-loginBtn.onclick = () => loginModal.style.display = "block";
-registerBtn.onclick = () => registerModal.style.display = "block";
-closeLogin.onclick = () => loginModal.style.display = "none";
-closeRegister.onclick = () => registerModal.style.display = "none";
-closeAdmin.onclick = () => adminModal.style.display = "none";
+document.getElementById("loginBtn").onclick = () => loginModal.style.display = "block";
+document.getElementById("registerBtn").onclick = () => registerModal.style.display = "block";
+document.getElementById("closeLogin").onclick = () => loginModal.style.display = "none";
+document.getElementById("closeRegister").onclick = () => registerModal.style.display = "none";
+document.getElementById("closeAdmin").onclick = () => adminModal.style.display = "none";
+document.getElementById("closeEditProduct").onclick = () => editProductModal.style.display = "none";
 
-goToLogin.onclick = (e) => {
+document.getElementById("goToLogin").onclick = function(e) {
     e.preventDefault();
     registerModal.style.display = "none";
     loginModal.style.display = "block";
 };
 
-goToRegister.onclick = (e) => {
+document.getElementById("goToRegister").onclick = function(e) {
     e.preventDefault();
     loginModal.style.display = "none";
     registerModal.style.display = "block";
 };
-</script>
-<!-- CIERRE DE MODALES (click fuera para cerrar) -->
-<script>
-window.onclick = function(event) {
 
+window.onclick = function(event) {
     if (event.target === loginModal) loginModal.style.display = "none";
     if (event.target === registerModal) registerModal.style.display = "none";
     if (event.target === adminModal) adminModal.style.display = "none";
     if (event.target === editProductModal) editProductModal.style.display = "none";
-
 };
 </script>
 
