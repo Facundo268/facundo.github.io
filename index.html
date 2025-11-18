@@ -85,21 +85,43 @@
         nav a:hover {
             color: #ffcccc;
         }
-        .btn-login {
+        .btn-login, .btn-register {
             background: #fff;
             color: #ff0a0a;
             border: none;
-            padding: 0.7rem 1.4rem;
+            padding: 0.7rem 2rem;
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
         }
-        .btn-login:hover {
+        .btn-login:hover, .btn-register:hover {
             background: #ffcccc;
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
+        }
+        .btn-register {
+            background: transparent;
+            border: 2px solid #fff;
+            color: #fff;
+        }
+        .btn-register:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .btn-logout {
+            background: #f44336;
+            color: #fff;
+            border: none;
+            padding: 0.7rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: none;
+        }
+        .btn-logout:hover {
+            background: #da190b;
         }
         .btn-admin {
             background: #fff;
@@ -321,7 +343,7 @@
         }
         .modal-content {
             background: #242424;
-            margin: 8% auto;
+            margin: 5% auto;
             padding: 2.5rem;
             border-radius: 15px;
             width: 90%;
@@ -371,6 +393,8 @@
         .form-group small {
             color: #999;
             font-size: 0.85rem;
+            display: block;
+            margin-top: 0.3rem;
         }
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             outline: none;
@@ -393,6 +417,19 @@
             background: #ff3333;
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(255, 10, 10, 0.4);
+        }
+        .form-link {
+            text-align: center;
+            margin-top: 1rem;
+            color: #ccc;
+        }
+        .form-link a {
+            color: #ff0a0a;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .form-link a:hover {
+            text-decoration: underline;
         }
         .admin-panel {
             max-width: 900px;
@@ -549,6 +586,24 @@
         footer a:hover {
             color: #ffcccc;
         }
+        .success-message {
+            background: #4CAF50;
+            color: #fff;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+            display: none;
+        }
+        .error-message {
+            background: #f44336;
+            color: #fff;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -562,9 +617,10 @@
                 <li><a href="#inicio">Inicio</a></li>
                 <li><a href="#productos">Productos</a></li>
                 <li><a href="#contacto">Contacto</a></li>
+                <li><button class="btn-register" id="registerBtn">Registrarse</button></li>
                 <li><button class="btn-login" id="loginBtn">Iniciar Sesión</button></li>
-                <li><button class="btn-login" id="registerBtn">Registrarse</button></li>
                 <li><button class="btn-admin" id="adminBtn">Panel Admin</button></li>
+                <li><button class="btn-logout" id="logoutBtn">Cerrar Sesión</button></li>
             </ul>
         </div>
     </nav>
@@ -623,11 +679,42 @@
         </div>
     </footer>
 
+    <!-- Modal Registro -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeRegister">&times;</span>
+            <h2>Crear Cuenta</h2>
+            <div class="success-message" id="registerSuccess"></div>
+            <div class="error-message" id="registerError"></div>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label>Usuario</label>
+                    <input type="text" id="regUsername" required minlength="3">
+                    <small>Mínimo 3 caracteres</small>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="regPassword" required minlength="6">
+                    <small>Mínimo 6 caracteres</small>
+                </div>
+                <div class="form-group">
+                    <label>Confirmar Contraseña</label>
+                    <input type="password" id="regConfirmPassword" required>
+                </div>
+                <button type="submit" class="btn-submit">Registrarse</button>
+            </form>
+            <div class="form-link">
+                ¿Ya tienes cuenta? <a href="#" id="goToLogin">Inicia sesión</a>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Login -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" id="closeLogin">&times;</span>
             <h2>Iniciar Sesión</h2>
+            <div class="error-message" id="loginError"></div>
             <form id="loginForm">
                 <div class="form-group">
                     <label>Usuario</label>
@@ -639,25 +726,9 @@
                 </div>
                 <button type="submit" class="btn-submit">Entrar</button>
             </form>
-        </div>
-    </div>
-
-    <!-- Modal Registro -->
-    <div id="registerModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" id="closeRegister">&times;</span>
-            <h2>Crear Cuenta</h2>
-            <form id="registerForm">
-                <div class="form-group">
-                    <label>Usuario</label>
-                    <input type="text" id="regUsername" required>
-                </div>
-                <div class="form-group">
-                    <label>Contraseña</label>
-                    <input type="password" id="regPassword" required>
-                </div>
-                <button type="submit" class="btn-submit">Registrarse</button>
-            </form>
+            <div class="form-link">
+                ¿No tienes cuenta? <a href="#" id="goToRegister">Regístrate</a>
+            </div>
         </div>
     </div>
 
@@ -669,7 +740,6 @@
             
             <div class="admin-tabs">
                 <button class="admin-tab active" data-tab="users">Usuarios</button>
-                <button class="admin-tab" data-tab="add">Agregar Usuario</button>
                 <button class="admin-tab" data-tab="products">Gestionar Productos</button>
                 <button class="admin-tab" data-tab="addProduct">Agregar Producto</button>
             </div>
@@ -678,29 +748,6 @@
             <div id="usersTab" class="admin-section active">
                 <h3 style="color: #fff; margin-bottom: 1rem;">Usuarios Registrados</h3>
                 <div id="usersList" class="user-list"></div>
-            </div>
-
-            <!-- Tab Agregar Usuario -->
-            <div id="addTab" class="admin-section">
-                <h3 style="color: #fff; margin-bottom: 1rem;">Agregar Nuevo Usuario</h3>
-                <form id="addUserForm">
-                    <div class="form-group">
-                        <label>Nombre de Usuario</label>
-                        <input type="text" id="newUsername" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Contraseña</label>
-                        <input type="password" id="newPassword" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Rol</label>
-                        <select id="newRole">
-                            <option value="user">Usuario Normal</option>
-                            <option value="admin">Administrador</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn-submit">Agregar Usuario</button>
-                </form>
             </div>
 
             <!-- Tab Gestionar Productos -->
@@ -713,32 +760,6 @@
             <div id="addProductTab" class="admin-section">
                 <h3 style="color: #fff; margin-bottom: 1rem;">Agregar Nuevo Producto</h3>
                 <form id="addProductForm">
-                    <div class="form-group">
-                        <label>Título del Producto</label>
-                        <input type="text" id="productTitle" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Descripción</label>
-                        <textarea id="productDescription" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Precio (ejemplo: $10.00 o GRATIS)</label>
-                        <input type="text" id="productPrice" required placeholder="$10.00">
-                    </div>
-                    <div class="form-group">
-                        <label>URL de la Imagen</label>
-                        <input type="url" id="productImage" placeholder="https://ejemplo.com/imagen.jpg">
-                        <small>Deja vacío para usar el logo XR por defecto</small>
-                    </div>
-                    <div class="form-group">
-                        <label>Categoría</label>
-                        <select id="productCategory" required>
-                            <option value="mta">MTA</option>
-                            <option value="fivem">FiveM</option>
-                            <option value="samp">SAMP</option>
-                            <option value="anticheat">AntiCheat</option>
-                        </select>
-                    </div>
                     <div class="form-group">
                         <label>Tipo</label>
                         <select id="productType" required>
@@ -800,53 +821,93 @@
     </div>
 
     <script>
-        // Productos iniciales
-        var products = [
-            // MTA - Scripts
-            { title: 'Sistema de Inventario', description: 'Sistema completo de inventario para MTA', price: '$16.00', category: 'mta', type: 'scripts', image: '' },
-            { title: 'Sistema de Trabajos', description: 'Múltiples trabajos para roleplay MTA', price: '$20.00', category: 'mta', type: 'scripts', image: '' },
-            { title: 'Sistema de Vehículos', description: 'Sistema avanzado de vehículos MTA', price: '$18.00', category: 'mta', type: 'scripts', image: '' },
+        // Sistema de almacenamiento
+        function saveToStorage(key, data) {
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        function getFromStorage(key) {
+            var data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : null;
+        }
+
+        // Inicializar datos
+        function initializeData() {
+            // Cargar usuarios o crear admin por defecto
+            var users = getFromStorage('xrstore_users');
+            if (!users) {
+                users = [
+                    { username: 'admin', password: 'admin123', role: 'admin' }
+                ];
+                saveToStorage('xrstore_users', users);
+            }
             
-            // MTA - Mapeos
-            { title: 'Apartamentos Modernos', description: 'Sistema completo de apartamentos con interiores editables', price: 'GRATIS', category: 'mta', type: 'mapeos', image: '' },
-            { title: 'Tienditas Pack', description: 'Pack de 10 tiendas pequeñas personalizables', price: '$8.00', category: 'mta', type: 'mapeos', image: '' },
-            { title: 'Music Studio', description: 'Estudio de grabación completo con equipos realistas', price: '$12.00', category: 'mta', type: 'mapeos', image: '' },
+            // Cargar productos o crear productos por defecto
+            var products = getFromStorage('xrstore_products');
+            if (!products) {
+                products = [
+                    // MTA - Scripts
+                    { title: 'Sistema de Inventario', description: 'Sistema completo de inventario para MTA', price: '$16.00', category: 'mta', type: 'scripts', image: '' },
+                    { title: 'Sistema de Trabajos', description: 'Múltiples trabajos para roleplay MTA', price: '$20.00', category: 'mta', type: 'scripts', image: '' },
+                    
+                    // MTA - Mapeos
+                    { title: 'Apartamentos Modernos', description: 'Sistema completo de apartamentos con interiores editables', price: 'GRATIS', category: 'mta', type: 'mapeos', image: '' },
+                    { title: 'Tienditas Pack', description: 'Pack de 10 tiendas pequeñas personalizables', price: '$8.00', category: 'mta', type: 'mapeos', image: '' },
+                    
+                    // FiveM - Scripts
+                    { title: 'HUD Premium', description: 'Interfaz HUD moderna y personalizable para FiveM', price: '$15.00', category: 'fivem', type: 'scripts', image: '' },
+                    { title: 'Sistema de Policía', description: 'Sistema completo de policía para FiveM', price: '$25.00', category: 'fivem', type: 'scripts', image: '' },
+                    
+                    // FiveM - Mapeos
+                    { title: 'Casa de Lujo', description: 'Interior de casa moderna de lujo', price: '$14.00', category: 'fivem', type: 'mapeos', image: '' },
+                    
+                    // SAMP
+                    { title: 'Sistema de Facciones', description: 'Sistema completo de facciones para SAMP', price: '$19.00', category: 'samp', type: 'scripts', image: '' },
+                    
+                    // AntiCheat
+                    { title: 'AntiCheat Pro MTA', description: 'Sistema anti-trampas avanzado para MTA', price: '$30.00', category: 'anticheat', type: 'anticheat', image: '' }
+                ];
+                saveToStorage('xrstore_products', products);
+            }
             
-            // FiveM - Scripts
-            { title: 'HUD Premium', description: 'Interfaz HUD moderna y personalizable para FiveM', price: '$15.00', category: 'fivem', type: 'scripts', image: '' },
-            { title: 'Sistema de Policía', description: 'Sistema completo de policía para FiveM', price: '$25.00', category: 'fivem', type: 'scripts', image: '' },
-            { title: 'Sistema Bancario', description: 'Banco funcional con ATMs para FiveM', price: '$22.00', category: 'fivem', type: 'scripts', image: '' },
-            
-            // FiveM - Mapeos
-            { title: 'Casa de Lujo', description: 'Interior de casa moderna de lujo', price: '$14.00', category: 'fivem', type: 'mapeos', image: '' },
-            { title: 'Concesionaria Premium', description: 'Concesionaria de autos de lujo', price: '$18.00', category: 'fivem', type: 'mapeos', image: '' },
-            { title: 'Comisaría Completa', description: 'Comisaría con celdas e interiores', price: '$16.00', category: 'fivem', type: 'mapeos', image: '' },
-            
-            // SAMP - Scripts
-            { title: 'Sistema de Facciones', description: 'Sistema completo de facciones para SAMP', price: '$19.00', category: 'samp', type: 'scripts', image: '' },
-            { title: 'Sistema de Negocios', description: 'Negocios comprables para SAMP', price: '$17.00', category: 'samp', type: 'scripts', image: '' },
-            
-            // SAMP - Mapeos
-            { title: 'Base Gang', description: 'Base personalizable para gangs', price: '$10.00', category: 'samp', type: 'mapeos', image: '' },
-            { title: 'Isla Privada', description: 'Isla exclusiva con mansión', price: '$25.00', category: 'samp', type: 'mapeos', image: '' },
-            
-            // AntiCheat
-            { title: 'AntiCheat Pro MTA', description: 'Sistema anti-trampas avanzado para MTA', price: '$30.00', category: 'anticheat', type: 'anticheat', image: '' },
-            { title: 'AntiCheat FiveM', description: 'Protección completa para servidores FiveM', price: '$35.00', category: 'anticheat', type: 'anticheat', image: '' },
-            { title: 'AntiCheat SAMP', description: 'Sistema de seguridad para SAMP', price: '$28.00', category: 'anticheat', type: 'anticheat', image: '' }
-        ];
-        
+            return { users: users, products: products };
+        }
+
+        var data = initializeData();
+        var users = data.users;
+        var products = data.products;
+        var currentUser = null;
         var currentCategory = 'all';
         var currentFilter = 'all';
         
-        // Usuarios del sistema
-        var users = [
-            { username: 'admin', password: 'admin123', role: 'admin' },
-            { username: 'user', password: 'user123', role: 'user' }
-        ];
-        
-        var currentUser = null;
-        
+        // Verificar sesión guardada
+        var savedSession = getFromStorage('xrstore_session');
+        if (savedSession) {
+            var foundUser = users.find(function(u) { return u.username === savedSession.username; });
+            if (foundUser) {
+                currentUser = foundUser;
+                updateUIForLoggedInUser();
+            }
+        }
+
+        function updateUIForLoggedInUser() {
+            document.getElementById('loginBtn').style.display = 'none';
+            document.getElementById('registerBtn').style.display = 'none';
+            document.getElementById('logoutBtn').style.display = 'block';
+            document.getElementById('logoutBtn').textContent = currentUser.username;
+            
+            if (currentUser.role === 'admin') {
+                document.getElementById('adminBtn').style.display = 'block';
+            }
+        }
+
+        function updateUIForLoggedOutUser() {
+            document.getElementById('loginBtn').style.display = 'block';
+            document.getElementById('registerBtn').style.display = 'block';
+            document.getElementById('logoutBtn').style.display = 'none';
+            document.getElementById('adminBtn').style.display = 'none';
+        }
+
         // Función para renderizar productos
         function renderProducts() {
             var productsContainer = document.getElementById('productos');
@@ -896,9 +957,7 @@
         var categoryBtns = document.querySelectorAll('.category-btn');
         categoryBtns.forEach(function(btn) {
             btn.onclick = function() {
-                categoryBtns.forEach(function(b) {
-                    b.classList.remove('active');
-                });
+                categoryBtns.forEach(function(b) { b.classList.remove('active'); });
                 btn.classList.add('active');
                 
                 currentCategory = btn.getAttribute('data-category');
@@ -943,23 +1002,33 @@
         });
         
         // Modales
+        var registerModal = document.getElementById('registerModal');
         var loginModal = document.getElementById('loginModal');
         var adminModal = document.getElementById('adminModal');
         var editProductModal = document.getElementById('editProductModal');
-        var registerModal = document.getElementById('registerModal');
         
+        var registerBtn = document.getElementById('registerBtn');
         var loginBtn = document.getElementById('loginBtn');
         var adminBtn = document.getElementById('adminBtn');
-        var registerBtn = document.getElementById('registerBtn');
+        var logoutBtn = document.getElementById('logoutBtn');
         
+        var closeRegister = document.getElementById('closeRegister');
         var closeLogin = document.getElementById('closeLogin');
         var closeAdmin = document.getElementById('closeAdmin');
         var closeEditProduct = document.getElementById('closeEditProduct');
-        var closeRegister = document.getElementById('closeRegister');
+        
+        if (registerBtn) {
+            registerBtn.onclick = function() {
+                registerModal.style.display = 'block';
+                document.getElementById('registerError').style.display = 'none';
+                document.getElementById('registerSuccess').style.display = 'none';
+            };
+        }
         
         if (loginBtn) {
             loginBtn.onclick = function() {
                 loginModal.style.display = 'block';
+                document.getElementById('loginError').style.display = 'none';
             };
         }
         
@@ -971,9 +1040,20 @@
             };
         }
 
-        if (registerBtn) {
-            registerBtn.onclick = function() {
-                registerModal.style.display = 'block';
+        if (logoutBtn) {
+            logoutBtn.onclick = function() {
+                if (confirm('¿Seguro que deseas cerrar sesión?')) {
+                    currentUser = null;
+                    localStorage.removeItem('xrstore_session');
+                    updateUIForLoggedOutUser();
+                    alert('Sesión cerrada exitosamente');
+                }
+            };
+        }
+        
+        if (closeRegister) {
+            closeRegister.onclick = function() {
+                registerModal.style.display = 'none';
             };
         }
         
@@ -994,27 +1074,133 @@
                 editProductModal.style.display = 'none';
             };
         }
+        
+        window.onclick = function(event) {
+            if (event.target == registerModal) registerModal.style.display = 'none';
+            if (event.target == loginModal) loginModal.style.display = 'none';
+            if (event.target == adminModal) adminModal.style.display = 'none';
+            if (event.target == editProductModal) editProductModal.style.display = 'none';
+        };
 
-        if (closeRegister) {
-            closeRegister.onclick = function() {
-                registerModal.style.display = 'none';
+        // Cambiar entre login y registro
+        document.getElementById('goToLogin').onclick = function(e) {
+            e.preventDefault();
+            registerModal.style.display = 'none';
+            loginModal.style.display = 'block';
+        };
+
+        document.getElementById('goToRegister').onclick = function(e) {
+            e.preventDefault();
+            loginModal.style.display = 'none';
+            registerModal.style.display = 'block';
+        };
+        
+        // Registro
+        var registerForm = document.getElementById('registerForm');
+        if (registerForm) {
+            registerForm.onsubmit = function(e) {
+                e.preventDefault();
+                
+                var username = document.getElementById('regUsername').value.trim();
+                var password = document.getElementById('regPassword').value;
+                var confirmPassword = document.getElementById('regConfirmPassword').value;
+                
+                var errorMsg = document.getElementById('registerError');
+                var successMsg = document.getElementById('registerSuccess');
+                
+                errorMsg.style.display = 'none';
+                successMsg.style.display = 'none';
+                
+                // Validaciones
+                if (username.length < 3) {
+                    errorMsg.textContent = 'El usuario debe tener al menos 3 caracteres';
+                    errorMsg.style.display = 'block';
+                    return false;
+                }
+                
+                if (password.length < 6) {
+                    errorMsg.textContent = 'La contraseña debe tener al menos 6 caracteres';
+                    errorMsg.style.display = 'block';
+                    return false;
+                }
+                
+                if (password !== confirmPassword) {
+                    errorMsg.textContent = 'Las contraseñas no coinciden';
+                    errorMsg.style.display = 'block';
+                    return false;
+                }
+                
+                // Verificar si el usuario ya existe
+                var userExists = users.some(function(u) { return u.username === username; });
+                
+                if (userExists) {
+                    errorMsg.textContent = 'El usuario ya existe';
+                    errorMsg.style.display = 'block';
+                    return false;
+                }
+                
+                // Crear nuevo usuario
+                var newUser = {
+                    username: username,
+                    password: password,
+                    role: 'user'
+                };
+                
+                users.push(newUser);
+                saveToStorage('xrstore_users', users);
+                
+                successMsg.textContent = '¡Cuenta creada exitosamente! Redirigiendo al login...';
+                successMsg.style.display = 'block';
+                
+                document.getElementById('regUsername').value = '';
+                document.getElementById('regPassword').value = '';
+                document.getElementById('regConfirmPassword').value = '';
+                
+                setTimeout(function() {
+                    registerModal.style.display = 'none';
+                    loginModal.style.display = 'block';
+                    document.getElementById('username').value = username;
+                }, 2000);
+                
+                return false;
             };
         }
         
-        window.onclick = function(event) {
-            if (event.target == loginModal) {
-                loginModal.style.display = 'none';
-            }
-            if (event.target == adminModal) {
-                adminModal.style.display = 'none';
-            }
-            if (event.target == editProductModal) {
-                editProductModal.style.display = 'none';
-            }
-            if (event.target == registerModal) {
-                registerModal.style.display = 'none';
-            }
-        };
+        // Login
+        var loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.onsubmit = function(e) {
+                e.preventDefault();
+                
+                var username = document.getElementById('username').value.trim();
+                var password = document.getElementById('password').value;
+                
+                var errorMsg = document.getElementById('loginError');
+                errorMsg.style.display = 'none';
+                
+                var foundUser = users.find(function(u) {
+                    return u.username === username && u.password === password;
+                });
+                
+                if (foundUser) {
+                    currentUser = foundUser;
+                    saveToStorage('xrstore_session', { username: username });
+                    
+                    alert('¡Bienvenido ' + username + '!');
+                    loginModal.style.display = 'none';
+                    
+                    updateUIForLoggedInUser();
+                    
+                    document.getElementById('username').value = '';
+                    document.getElementById('password').value = '';
+                } else {
+                    errorMsg.textContent = 'Usuario o contraseña incorrectos';
+                    errorMsg.style.display = 'block';
+                }
+                
+                return false;
+            };
+        }
         
         // Tabs del panel admin
         var adminTabs = document.querySelectorAll('.admin-tab');
@@ -1036,122 +1222,11 @@
                 
                 if (tabName === 'products') {
                     loadProductsList();
+                } else if (tabName === 'users') {
+                    loadUsersList();
                 }
             };
         });
-        
-        // Registro
-        var registerForm = document.getElementById('registerForm');
-        if (registerForm) {
-            registerForm.onsubmit = function(e) {
-                e.preventDefault();
-
-                var newUser = document.getElementById('regUsername').value;
-                var newPass = document.getElementById('regPassword').value;
-
-                var exists = users.some(function(u){ return u.username === newUser; });
-                if (exists) {
-                    alert('Ese usuario ya existe, elige otro.');
-                    return false;
-                }
-
-                users.push({
-                    username: newUser,
-                    password: newPass,
-                    role: 'user'
-                });
-
-                alert('Usuario creado exitosamente. Ya puedes iniciar sesión.');
-                registerModal.style.display = 'none';
-
-                document.getElementById('regUsername').value = '';
-                document.getElementById('regPassword').value = '';
-
-                return false;
-            };
-        }
-
-        // Login
-        var loginForm = document.getElementById('loginForm');
-        if (loginForm) {
-            loginForm.onsubmit = function(e) {
-                e.preventDefault();
-                
-                var userInput = document.getElementById('username');
-                var passInput = document.getElementById('password');
-                
-                var user = userInput.value;
-                var pass = passInput.value;
-                
-                var foundUser = null;
-                for (var i = 0; i < users.length; i++) {
-                    if (users[i].username === user && users[i].password === pass) {
-                        foundUser = users[i];
-                        break;
-                    }
-                }
-                
-                if (foundUser) {
-                    currentUser = foundUser;
-                    alert('¡Bienvenido ' + user + '!');
-                    loginModal.style.display = 'none';
-                    loginBtn.textContent = 'Hola, ' + user;
-                    loginBtn.style.background = '#4CAF50';
-                    
-                    if (foundUser.role === 'admin') {
-                        adminBtn.style.display = 'block';
-                    }
-                    
-                    userInput.value = '';
-                    passInput.value = '';
-                } else {
-                    alert('Usuario o contraseña incorrectos');
-                }
-                
-                return false;
-            };
-        }
-        
-        // Agregar usuario
-        var addUserForm = document.getElementById('addUserForm');
-        if (addUserForm) {
-            addUserForm.onsubmit = function(e) {
-                e.preventDefault();
-                
-                var newUser = document.getElementById('newUsername').value;
-                var newPass = document.getElementById('newPassword').value;
-                var newRole = document.getElementById('newRole').value;
-                
-                var userExists = false;
-                for (var i = 0; i < users.length; i++) {
-                    if (users[i].username === newUser) {
-                        userExists = true;
-                        break;
-                    }
-                }
-                
-                if (userExists) {
-                    alert('El usuario ya existe');
-                    return false;
-                }
-                
-                users.push({
-                    username: newUser,
-                    password: newPass,
-                    role: newRole
-                });
-                
-                alert('Usuario ' + newUser + ' agregado exitosamente como ' + newRole);
-                
-                document.getElementById('newUsername').value = '';
-                document.getElementById('newPassword').value = '';
-                document.getElementById('newRole').value = 'user';
-                
-                loadUsersList();
-                
-                return false;
-            };
-        }
         
         // Agregar producto
         var addProductForm = document.getElementById('addProductForm');
@@ -1169,6 +1244,7 @@
                 };
                 
                 products.push(newProduct);
+                saveToStorage('xrstore_products', products);
                 
                 alert('Producto "' + newProduct.title + '" agregado exitosamente');
                 
@@ -1203,6 +1279,8 @@
                     type: document.getElementById('editProductType').value
                 };
                 
+                saveToStorage('xrstore_products', products);
+                
                 alert('Producto actualizado exitosamente');
                 
                 editProductModal.style.display = 'none';
@@ -1218,8 +1296,7 @@
             var usersList = document.getElementById('usersList');
             usersList.innerHTML = '';
             
-            for (var i = 0; i < users.length; i++) {
-                var user = users[i];
+            users.forEach(function(user, index) {
                 var userItem = document.createElement('div');
                 userItem.className = 'user-item';
                 
@@ -1242,11 +1319,10 @@
                         var promoteBtn = document.createElement('button');
                         promoteBtn.className = 'btn-action btn-promote';
                         promoteBtn.textContent = 'Hacer Admin';
-                        promoteBtn.setAttribute('data-index', i);
                         promoteBtn.onclick = function() {
-                            var idx = this.getAttribute('data-index');
-                            users[idx].role = 'admin';
-                            alert('Usuario ' + users[idx].username + ' ahora es administrador');
+                            users[index].role = 'admin';
+                            saveToStorage('xrstore_users', users);
+                            alert('Usuario ' + user.username + ' ahora es administrador');
                             loadUsersList();
                         };
                         userActions.appendChild(promoteBtn);
@@ -1254,11 +1330,10 @@
                         var demoteBtn = document.createElement('button');
                         demoteBtn.className = 'btn-action btn-demote';
                         demoteBtn.textContent = 'Quitar Admin';
-                        demoteBtn.setAttribute('data-index', i);
                         demoteBtn.onclick = function() {
-                            var idx = this.getAttribute('data-index');
-                            users[idx].role = 'user';
-                            alert('Usuario ' + users[idx].username + ' ahora es usuario normal');
+                            users[index].role = 'user';
+                            saveToStorage('xrstore_users', users);
+                            alert('Usuario ' + user.username + ' ahora es usuario normal');
                             loadUsersList();
                         };
                         userActions.appendChild(demoteBtn);
@@ -1268,13 +1343,11 @@
                         var deleteBtn = document.createElement('button');
                         deleteBtn.className = 'btn-action btn-delete';
                         deleteBtn.textContent = 'Eliminar';
-                        deleteBtn.setAttribute('data-index', i);
                         deleteBtn.onclick = function() {
-                            var idx = this.getAttribute('data-index');
-                            if (confirm('¿Seguro que deseas eliminar a ' + users[idx].username + '?')) {
-                                var deletedUser = users[idx].username;
-                                users.splice(idx, 1);
-                                alert('Usuario ' + deletedUser + ' eliminado');
+                            if (confirm('¿Seguro que deseas eliminar a ' + user.username + '?')) {
+                                users.splice(index, 1);
+                                saveToStorage('xrstore_users', users);
+                                alert('Usuario ' + user.username + ' eliminado');
                                 loadUsersList();
                             }
                         };
@@ -1285,7 +1358,7 @@
                 userItem.appendChild(userInfo);
                 userItem.appendChild(userActions);
                 usersList.appendChild(userItem);
-            }
+            });
         }
         
         // Cargar lista de productos
@@ -1298,8 +1371,7 @@
                 return;
             }
             
-            for (var i = 0; i < products.length; i++) {
-                var product = products[i];
+            products.forEach(function(product, index) {
                 var productItem = document.createElement('div');
                 productItem.className = 'product-item';
                 
@@ -1328,22 +1400,18 @@
                     var editBtn = document.createElement('button');
                     editBtn.className = 'btn-action btn-edit';
                     editBtn.textContent = 'Editar';
-                    editBtn.setAttribute('data-index', i);
                     editBtn.onclick = function() {
-                        var idx = parseInt(this.getAttribute('data-index'));
-                        openEditProductModal(idx);
+                        openEditProductModal(index);
                     };
                     
                     var deleteBtn = document.createElement('button');
                     deleteBtn.className = 'btn-action btn-delete';
                     deleteBtn.textContent = 'Eliminar';
-                    deleteBtn.setAttribute('data-index', i);
                     deleteBtn.onclick = function() {
-                        var idx = parseInt(this.getAttribute('data-index'));
-                        if (confirm('¿Seguro que deseas eliminar "' + products[idx].title + '"?')) {
-                            var deletedProduct = products[idx].title;
-                            products.splice(idx, 1);
-                            alert('Producto "' + deletedProduct + '" eliminado');
+                        if (confirm('¿Seguro que deseas eliminar "' + product.title + '"?')) {
+                            products.splice(index, 1);
+                            saveToStorage('xrstore_products', products);
+                            alert('Producto "' + product.title + '" eliminado');
                             renderProducts();
                             loadProductsList();
                         }
@@ -1382,7 +1450,7 @@
                 productItem.appendChild(header);
                 productItem.appendChild(meta);
                 productsList.appendChild(productItem);
-            }
+            });
         }
         
         // Abrir modal de edición
@@ -1404,4 +1472,29 @@
         renderProducts();
     </script>
 </body>
-</html>
+</html><label>Título del Producto</label>
+                        <input type="text" id="productTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <textarea id="productDescription" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Precio (ejemplo: $10.00 o GRATIS)</label>
+                        <input type="text" id="productPrice" required placeholder="$10.00">
+                    </div>
+                    <div class="form-group">
+                        <label>URL de la Imagen</label>
+                        <input type="url" id="productImage" placeholder="https://ejemplo.com/imagen.jpg">
+                        <small>Deja vacío para usar el logo XR por defecto</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <select id="productCategory" required>
+                            <option value="mta">MTA</option>
+                            <option value="fivem">FiveM</option>
+                            <option value="samp">SAMP</option>
+                            <option value="anticheat">AntiCheat</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
