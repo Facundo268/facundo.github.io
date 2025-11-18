@@ -678,7 +678,6 @@
             </a>
         </div>
     </footer>
-
     <!-- Modal Registro -->
     <div id="registerModal" class="modal">
         <div class="modal-content">
@@ -759,7 +758,40 @@
             <!-- Tab Agregar Producto -->
             <div id="addProductTab" class="admin-section">
                 <h3 style="color: #fff; margin-bottom: 1rem;">Agregar Nuevo Producto</h3>
+
                 <form id="addProductForm">
+
+                    <div class="form-group">
+                        <label>Título del Producto</label>
+                        <input type="text" id="productTitle" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <textarea id="productDescription" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Precio (ejemplo: $10.00 o GRATIS)</label>
+                        <input type="text" id="productPrice" required placeholder="$10.00">
+                    </div>
+
+                    <div class="form-group">
+                        <label>URL de la Imagen</label>
+                        <input type="url" id="productImage" placeholder="https://ejemplo.com/imagen.jpg">
+                        <small>Deja vacío para usar el logo XR por defecto</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <select id="productCategory" required>
+                            <option value="mta">MTA</option>
+                            <option value="fivem">FiveM</option>
+                            <option value="samp">SAMP</option>
+                            <option value="anticheat">AntiCheat</option>
+                        </select>
+                    </div>
+
                     <div class="form-group">
                         <label>Tipo</label>
                         <select id="productType" required>
@@ -768,7 +800,9 @@
                             <option value="anticheat">AntiCheat</option>
                         </select>
                     </div>
+
                     <button type="submit" class="btn-submit">Agregar Producto</button>
+
                 </form>
             </div>
         </div>
@@ -781,23 +815,28 @@
             <h2>Editar Producto</h2>
             <form id="editProductForm">
                 <input type="hidden" id="editProductIndex">
+
                 <div class="form-group">
                     <label>Título del Producto</label>
                     <input type="text" id="editProductTitle" required>
                 </div>
+
                 <div class="form-group">
                     <label>Descripción</label>
                     <textarea id="editProductDescription" required></textarea>
                 </div>
+
                 <div class="form-group">
                     <label>Precio</label>
                     <input type="text" id="editProductPrice" required>
                 </div>
+
                 <div class="form-group">
                     <label>URL de la Imagen</label>
                     <input type="url" id="editProductImage" placeholder="https://ejemplo.com/imagen.jpg">
                     <small>Deja vacío para usar el logo XR por defecto</small>
                 </div>
+
                 <div class="form-group">
                     <label>Categoría</label>
                     <select id="editProductCategory" required>
@@ -807,6 +846,7 @@
                         <option value="anticheat">AntiCheat</option>
                     </select>
                 </div>
+
                 <div class="form-group">
                     <label>Tipo</label>
                     <select id="editProductType" required>
@@ -815,686 +855,420 @@
                         <option value="anticheat">AntiCheat</option>
                     </select>
                 </div>
+
                 <button type="submit" class="btn-submit">Guardar Cambios</button>
             </form>
         </div>
     </div>
+<script>
+    // Sistema de almacenamiento
+    function saveToStorage(key, data) {
+        localStorage.setItem(key, JSON.stringify(data));
+    }
 
-    <script>
-        // Sistema de almacenamiento
-        function saveToStorage(key, data) {
-            localStorage.setItem(key, JSON.stringify(data));
-        }
+    function getFromStorage(key) {
+        var data = localStorage.getItem(key);
+        return data ? JSON.parse(data) : null;
+    }
 
-        function getFromStorage(key) {
-            var data = localStorage.getItem(key);
-            return data ? JSON.parse(data) : null;
-        }
-
-        // Inicializar datos
-        function initializeData() {
-            // Cargar usuarios o crear admin por defecto
-            var users = getFromStorage('xrstore_users');
-            if (!users) {
-                users = [
-                    { username: 'admin', password: 'admin123', role: 'admin' }
-                ];
-                saveToStorage('xrstore_users', users);
-            }
-            
-            // Cargar productos o crear productos por defecto
-            var products = getFromStorage('xrstore_products');
-            if (!products) {
-                products = [
-                    // MTA - Scripts
-                    { title: 'Sistema de Inventario', description: 'Sistema completo de inventario para MTA', price: '$16.00', category: 'mta', type: 'scripts', image: '' },
-                    { title: 'Sistema de Trabajos', description: 'Múltiples trabajos para roleplay MTA', price: '$20.00', category: 'mta', type: 'scripts', image: '' },
-                    
-                    // MTA - Mapeos
-                    { title: 'Apartamentos Modernos', description: 'Sistema completo de apartamentos con interiores editables', price: 'GRATIS', category: 'mta', type: 'mapeos', image: '' },
-                    { title: 'Tienditas Pack', description: 'Pack de 10 tiendas pequeñas personalizables', price: '$8.00', category: 'mta', type: 'mapeos', image: '' },
-                    
-                    // FiveM - Scripts
-                    { title: 'HUD Premium', description: 'Interfaz HUD moderna y personalizable para FiveM', price: '$15.00', category: 'fivem', type: 'scripts', image: '' },
-                    { title: 'Sistema de Policía', description: 'Sistema completo de policía para FiveM', price: '$25.00', category: 'fivem', type: 'scripts', image: '' },
-                    
-                    // FiveM - Mapeos
-                    { title: 'Casa de Lujo', description: 'Interior de casa moderna de lujo', price: '$14.00', category: 'fivem', type: 'mapeos', image: '' },
-                    
-                    // SAMP
-                    { title: 'Sistema de Facciones', description: 'Sistema completo de facciones para SAMP', price: '$19.00', category: 'samp', type: 'scripts', image: '' },
-                    
-                    // AntiCheat
-                    { title: 'AntiCheat Pro MTA', description: 'Sistema anti-trampas avanzado para MTA', price: '$30.00', category: 'anticheat', type: 'anticheat', image: '' }
-                ];
-                saveToStorage('xrstore_products', products);
-            }
-            
-            return { users: users, products: products };
-        }
-
-        var data = initializeData();
-        var users = data.users;
-        var products = data.products;
-        var currentUser = null;
-        var currentCategory = 'all';
-        var currentFilter = 'all';
-        
-        // Verificar sesión guardada
-        var savedSession = getFromStorage('xrstore_session');
-        if (savedSession) {
-            var foundUser = users.find(function(u) { return u.username === savedSession.username; });
-            if (foundUser) {
-                currentUser = foundUser;
-                updateUIForLoggedInUser();
-            }
-        }
-
-        function updateUIForLoggedInUser() {
-            document.getElementById('loginBtn').style.display = 'none';
-            document.getElementById('registerBtn').style.display = 'none';
-            document.getElementById('logoutBtn').style.display = 'block';
-            document.getElementById('logoutBtn').textContent = currentUser.username;
-            
-            if (currentUser.role === 'admin') {
-                document.getElementById('adminBtn').style.display = 'block';
-            }
-        }
-
-        function updateUIForLoggedOutUser() {
-            document.getElementById('loginBtn').style.display = 'block';
-            document.getElementById('registerBtn').style.display = 'block';
-            document.getElementById('logoutBtn').style.display = 'none';
-            document.getElementById('adminBtn').style.display = 'none';
-        }
-
-        // Función para renderizar productos
-        function renderProducts() {
-            var productsContainer = document.getElementById('productos');
-            productsContainer.innerHTML = '';
-            
-            var filteredProducts = products.filter(function(product) {
-                var categoryMatch = currentCategory === 'all' || product.category === currentCategory;
-                var filterMatch = currentFilter === 'all' || product.type === currentFilter;
-                return categoryMatch && filterMatch;
-            });
-            
-            filteredProducts.forEach(function(product) {
-                var card = document.createElement('div');
-                card.className = 'product-card';
-                
-                var imageHtml = '';
-                if (product.image && product.image.trim() !== '') {
-                    imageHtml = '<div class="product-image has-custom-image"><img src="' + product.image + '" alt="' + product.title + '" onerror="this.parentElement.classList.remove(\'has-custom-image\'); this.remove(); var logo = document.createElement(\'div\'); logo.className = \'product-logo\'; logo.textContent = \'XR\'; this.parentElement.appendChild(logo);"></div>';
-                } else {
-                    imageHtml = '<div class="product-image"><div class="product-logo">XR</div></div>';
-                }
-                
-                card.innerHTML = imageHtml +
-                    '<div class="product-content">' +
-                        '<h3 class="product-title">' + product.title + '</h3>' +
-                        '<p class="product-description">' + product.description + '</p>' +
-                        '<div class="product-footer">' +
-                            '<span class="price">' + product.price + '</span>' +
-                            '<button class="btn-buy">' + (product.price === 'GRATIS' ? 'Descargar' : 'Comprar') + '</button>' +
-                        '</div>' +
-                    '</div>';
-                
-                productsContainer.appendChild(card);
-            });
-            
-            var buyButtons = document.querySelectorAll('.btn-buy');
-            buyButtons.forEach(function(btn) {
-                btn.onclick = function() {
-                    var card = this.closest('.product-card');
-                    var title = card.querySelector('.product-title').textContent;
-                    alert('Gracias por tu interés en ' + title + '. Contacta con nosotros para completar la compra.');
-                };
-            });
+    // Inicializar datos
+    function initializeData() {
+        // Cargar usuarios o crear admin por defecto
+        var users = getFromStorage('xrstore_users');
+        if (!users) {
+            users = [
+                { username: 'admin', password: 'admin123', role: 'admin' }
+            ];
+            saveToStorage('xrstore_users', users);
         }
         
-        // Manejadores de categorías
-        var categoryBtns = document.querySelectorAll('.category-btn');
-        categoryBtns.forEach(function(btn) {
-            btn.onclick = function() {
-                categoryBtns.forEach(function(b) { b.classList.remove('active'); });
-                btn.classList.add('active');
-                
-                currentCategory = btn.getAttribute('data-category');
-                currentFilter = 'all';
-                
-                document.querySelectorAll('.filter-section').forEach(function(section) {
-                    section.classList.remove('active');
-                });
-                
-                document.querySelectorAll('.filter-btn').forEach(function(fb) {
-                    fb.classList.remove('active');
-                    if (fb.getAttribute('data-filter') === 'all') {
-                        fb.classList.add('active');
-                    }
-                });
-                
-                if (currentCategory === 'mta') {
-                    document.getElementById('mtaFilters').classList.add('active');
-                } else if (currentCategory === 'fivem') {
-                    document.getElementById('fivemFilters').classList.add('active');
-                } else if (currentCategory === 'samp') {
-                    document.getElementById('sampFilters').classList.add('active');
-                }
-                
-                renderProducts();
-            };
+        // Cargar productos por defecto
+        var products = getFromStorage('xrstore_products');
+        if (!products) {
+            products = [
+                { title: 'Sistema de Inventario', description: 'Sistema completo de inventario para MTA', price: '$16.00', category: 'mta', type: 'scripts', image: '' },
+                { title: 'Sistema de Trabajos', description: 'Múltiples trabajos para roleplay MTA', price: '$20.00', category: 'mta', type: 'scripts', image: '' },
+                { title: 'Apartamentos Modernos', description: 'Sistema completo de apartamentos con interiores editables', price: 'GRATIS', category: 'mta', type: 'mapeos', image: '' },
+                { title: 'Tienditas Pack', description: 'Pack de 10 tiendas pequeñas personalizables', price: '$8.00', category: 'mta', type: 'mapeos', image: '' },
+                { title: 'HUD Premium', description: 'Interfaz moderna para FiveM', price: '$15.00', category: 'fivem', type: 'scripts', image: '' },
+                { title: 'Sistema de Policía', description: 'Sistema completo de policía', price: '$25.00', category: 'fivem', type: 'scripts', image: '' },
+                { title: 'Casa de Lujo', description: 'Interior de casa moderna', price: '$14.00', category: 'fivem', type: 'mapeos', image: '' },
+                { title: 'Sistema de Facciones', description: 'Sistema completo para SAMP', price: '$19.00', category: 'samp', type: 'scripts', image: '' },
+                { title: 'AntiCheat Pro MTA', description: 'Anti trampas avanzado', price: '$30.00', category: 'anticheat', type: 'anticheat', image: '' }
+            ];
+            saveToStorage('xrstore_products', products);
+        }
+        
+        return { users: users, products: products };
+    }
+
+    var data = initializeData();
+    var users = data.users;
+    var products = data.products;
+    var currentUser = null;
+    var currentCategory = 'all';
+    var currentFilter = 'all';
+
+    // Recuperar sesión
+    var savedSession = getFromStorage('xrstore_session');
+    if (savedSession) {
+        var foundUser = users.find(function(u) { return u.username === savedSession.username; });
+        if (foundUser) {
+            currentUser = foundUser;
+            updateUIForLoggedInUser();
+        }
+    }
+
+    // UI LOGGED
+    function updateUIForLoggedInUser() {
+        document.getElementById('loginBtn').style.display = 'none';
+        document.getElementById('registerBtn').style.display = 'none';
+        document.getElementById('logoutBtn').style.display = 'block';
+        document.getElementById('logoutBtn').textContent = currentUser.username;
+
+        if (currentUser.role === 'admin') {
+            document.getElementById('adminBtn').style.display = 'block';
+        }
+    }
+
+    function updateUIForLoggedOutUser() {
+        document.getElementById('loginBtn').style.display = 'block';
+        document.getElementById('registerBtn').style.display = 'block';
+        document.getElementById('logoutBtn').style.display = 'none';
+        document.getElementById('adminBtn').style.display = 'none';
+    }
+
+    // Renderizar productos
+    function renderProducts() {
+        var productsContainer = document.getElementById('productos');
+        productsContainer.innerHTML = '';
+        
+        var filteredProducts = products.filter(function(product) {
+            var categoryMatch = currentCategory === 'all' || product.category === currentCategory;
+            var filterMatch = currentFilter === 'all' || product.type === currentFilter;
+            return categoryMatch && filterMatch;
         });
         
-        // Manejadores de filtros
-        var filterBtns = document.querySelectorAll('.filter-btn');
-        filterBtns.forEach(function(btn) {
-            btn.onclick = function() {
-                var section = btn.closest('.filter-section');
-                section.querySelectorAll('.filter-btn').forEach(function(b) {
-                    b.classList.remove('active');
-                });
-                btn.classList.add('active');
-                
-                currentFilter = btn.getAttribute('data-filter');
-                renderProducts();
-            };
-        });
-        
-        // Modales
-        var registerModal = document.getElementById('registerModal');
-        var loginModal = document.getElementById('loginModal');
-        var adminModal = document.getElementById('adminModal');
-        var editProductModal = document.getElementById('editProductModal');
-        
-        var registerBtn = document.getElementById('registerBtn');
-        var loginBtn = document.getElementById('loginBtn');
-        var adminBtn = document.getElementById('adminBtn');
-        var logoutBtn = document.getElementById('logoutBtn');
-        
-        var closeRegister = document.getElementById('closeRegister');
-        var closeLogin = document.getElementById('closeLogin');
-        var closeAdmin = document.getElementById('closeAdmin');
-        var closeEditProduct = document.getElementById('closeEditProduct');
-        
-        if (registerBtn) {
-            registerBtn.onclick = function() {
-                registerModal.style.display = 'block';
-                document.getElementById('registerError').style.display = 'none';
-                document.getElementById('registerSuccess').style.display = 'none';
-            };
-        }
-        
-        if (loginBtn) {
-            loginBtn.onclick = function() {
-                loginModal.style.display = 'block';
-                document.getElementById('loginError').style.display = 'none';
-            };
-        }
-        
-        if (adminBtn) {
-            adminBtn.onclick = function() {
-                adminModal.style.display = 'block';
-                loadUsersList();
-                loadProductsList();
-            };
-        }
+        filteredProducts.forEach(function(product) {
+            var card = document.createElement('div');
+            card.className = 'product-card';
 
-        if (logoutBtn) {
-            logoutBtn.onclick = function() {
-                if (confirm('¿Seguro que deseas cerrar sesión?')) {
-                    currentUser = null;
-                    localStorage.removeItem('xrstore_session');
-                    updateUIForLoggedOutUser();
-                    alert('Sesión cerrada exitosamente');
-                }
-            };
-        }
-        
-        if (closeRegister) {
-            closeRegister.onclick = function() {
-                registerModal.style.display = 'none';
-            };
-        }
-        
-        if (closeLogin) {
-            closeLogin.onclick = function() {
-                loginModal.style.display = 'none';
-            };
-        }
-        
-        if (closeAdmin) {
-            closeAdmin.onclick = function() {
-                adminModal.style.display = 'none';
-            };
-        }
-        
-        if (closeEditProduct) {
-            closeEditProduct.onclick = function() {
-                editProductModal.style.display = 'none';
-            };
-        }
-        
-        window.onclick = function(event) {
-            if (event.target == registerModal) registerModal.style.display = 'none';
-            if (event.target == loginModal) loginModal.style.display = 'none';
-            if (event.target == adminModal) adminModal.style.display = 'none';
-            if (event.target == editProductModal) editProductModal.style.display = 'none';
+            var imageHtml = '';
+            if (product.image && product.image.trim() !== '') {
+                imageHtml = `
+                    <div class="product-image has-custom-image">
+                        <img src="${product.image}" alt="${product.title}">
+                    </div>`;
+            } else {
+                imageHtml = `
+                    <div class="product-image">
+                        <div class="product-logo">XR</div>
+                    </div>`;
+            }
+            
+            card.innerHTML = imageHtml +
+                `<div class="product-content">
+                    <h3 class="product-title">${product.title}</h3>
+                    <p class="product-description">${product.description}</p>
+                    <div class="product-footer">
+                        <span class="price">${product.price}</span>
+                        <button class="btn-buy">${product.price === 'GRATIS' ? 'Descargar' : 'Comprar'}</button>
+                    </div>
+                </div>`;
+            
+            productsContainer.appendChild(card);
+        });
+    }
+
+    // Categorías
+    document.querySelectorAll('.category-btn').forEach(function(btn) {
+        btn.onclick = function() {
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentCategory = btn.getAttribute('data-category');
+            currentFilter = 'all';
+
+            document.querySelectorAll('.filter-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.filter-btn').forEach(f => f.classList.remove('active'));
+
+            if (currentCategory === 'mta') document.getElementById('mtaFilters').classList.add('active');
+            if (currentCategory === 'fivem') document.getElementById('fivemFilters').classList.add('active');
+            if (currentCategory === 'samp') document.getElementById('sampFilters').classList.add('active');
+
+            renderProducts();
         };
+    });
 
-        // Cambiar entre login y registro
-        document.getElementById('goToLogin').onclick = function(e) {
-            e.preventDefault();
+    // Modales
+    var registerModal = document.getElementById('registerModal');
+    var loginModal = document.getElementById('loginModal');
+    var adminModal = document.getElementById('adminModal');
+    var editProductModal = document.getElementById('editProductModal');
+
+    document.getElementById('registerBtn').onclick = () => registerModal.style.display = 'block';
+    document.getElementById('loginBtn').onclick = () => loginModal.style.display = 'block';
+    document.getElementById('adminBtn').onclick = () => {
+        adminModal.style.display = 'block';
+        loadUsersList();
+        loadProductsList();
+    };
+
+    document.getElementById('logoutBtn').onclick = function() {
+        if (confirm('¿Seguro que deseas cerrar sesión?')) {
+            currentUser = null;
+            localStorage.removeItem('xrstore_session');
+            updateUIForLoggedOutUser();
+            alert('Sesión cerrada');
+        }
+    };
+
+    document.querySelectorAll('.close-modal').forEach(function(close) {
+        close.onclick = function() {
+            close.parentElement.parentElement.style.display = 'none';
+        };
+    });
+
+    // ** Registro **
+    document.getElementById('registerForm').onsubmit = function(e) {
+        e.preventDefault();
+        
+        let username = regUsername.value.trim();
+        let password = regPassword.value;
+        let confirmPassword = regConfirmPassword.value;
+
+        if (users.some(u => u.username === username)) {
+            registerError.textContent = 'El usuario ya existe';
+            registerError.style.display = 'block';
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            registerError.textContent = 'Las contraseñas no coinciden';
+            registerError.style.display = 'block';
+            return;
+        }
+
+        users.push({ username, password, role: 'user' });
+        saveToStorage('xrstore_users', users);
+
+        registerSuccess.textContent = 'Cuenta creada. Redirigiendo...';
+        registerSuccess.style.display = 'block';
+
+        setTimeout(() => {
             registerModal.style.display = 'none';
             loginModal.style.display = 'block';
-        };
+            usernameInput.value = username;
+        }, 1500);
+    };
 
-        document.getElementById('goToRegister').onclick = function(e) {
-            e.preventDefault();
-            loginModal.style.display = 'none';
-            registerModal.style.display = 'block';
-        };
+    // ** Login **
+    document.getElementById('loginForm').onsubmit = function(e) {
+        e.preventDefault();
         
-        // Registro
-        var registerForm = document.getElementById('registerForm');
-        if (registerForm) {
-            registerForm.onsubmit = function(e) {
-                e.preventDefault();
-                
-                var username = document.getElementById('regUsername').value.trim();
-                var password = document.getElementById('regPassword').value;
-                var confirmPassword = document.getElementById('regConfirmPassword').value;
-                
-                var errorMsg = document.getElementById('registerError');
-                var successMsg = document.getElementById('registerSuccess');
-                
-                errorMsg.style.display = 'none';
-                successMsg.style.display = 'none';
-                
-                // Validaciones
-                if (username.length < 3) {
-                    errorMsg.textContent = 'El usuario debe tener al menos 3 caracteres';
-                    errorMsg.style.display = 'block';
-                    return false;
-                }
-                
-                if (password.length < 6) {
-                    errorMsg.textContent = 'La contraseña debe tener al menos 6 caracteres';
-                    errorMsg.style.display = 'block';
-                    return false;
-                }
-                
-                if (password !== confirmPassword) {
-                    errorMsg.textContent = 'Las contraseñas no coinciden';
-                    errorMsg.style.display = 'block';
-                    return false;
-                }
-                
-                // Verificar si el usuario ya existe
-                var userExists = users.some(function(u) { return u.username === username; });
-                
-                if (userExists) {
-                    errorMsg.textContent = 'El usuario ya existe';
-                    errorMsg.style.display = 'block';
-                    return false;
-                }
-                
-                // Crear nuevo usuario
-                var newUser = {
-                    username: username,
-                    password: password,
-                    role: 'user'
-                };
-                
-                users.push(newUser);
-                saveToStorage('xrstore_users', users);
-                
-                successMsg.textContent = '¡Cuenta creada exitosamente! Redirigiendo al login...';
-                successMsg.style.display = 'block';
-                
-                document.getElementById('regUsername').value = '';
-                document.getElementById('regPassword').value = '';
-                document.getElementById('regConfirmPassword').value = '';
-                
-                setTimeout(function() {
-                    registerModal.style.display = 'none';
-                    loginModal.style.display = 'block';
-                    document.getElementById('username').value = username;
-                }, 2000);
-                
-                return false;
-            };
+        let username = usernameInput.value.trim();
+        let password = passwordInput.value;
+
+        let foundUser = users.find(u => u.username === username && u.password === password);
+
+        if (!foundUser) {
+            loginError.textContent = 'Usuario o contraseña incorrectos';
+            loginError.style.display = 'block';
+            return;
         }
+
+        currentUser = foundUser;
+        saveToStorage('xrstore_session', { username });
+
+        updateUIForLoggedInUser();
+        loginModal.style.display = 'none';
+    };
+
+    // ** PANEL ADMIN: Cargar Usuarios **
+    function loadUsersList() {
+        var usersList = document.getElementById('usersList');
+        usersList.innerHTML = '';
         
-        // Login
-        var loginForm = document.getElementById('loginForm');
-        if (loginForm) {
-            loginForm.onsubmit = function(e) {
-                e.preventDefault();
-                
-                var username = document.getElementById('username').value.trim();
-                var password = document.getElementById('password').value;
-                
-                var errorMsg = document.getElementById('loginError');
-                errorMsg.style.display = 'none';
-                
-                var foundUser = users.find(function(u) {
-                    return u.username === username && u.password === password;
-                });
-                
-                if (foundUser) {
-                    currentUser = foundUser;
-                    saveToStorage('xrstore_session', { username: username });
-                    
-                    alert('¡Bienvenido ' + username + '!');
-                    loginModal.style.display = 'none';
-                    
-                    updateUIForLoggedInUser();
-                    
-                    document.getElementById('username').value = '';
-                    document.getElementById('password').value = '';
-                } else {
-                    errorMsg.textContent = 'Usuario o contraseña incorrectos';
-                    errorMsg.style.display = 'block';
-                }
-                
-                return false;
-            };
-        }
-        
-        // Tabs del panel admin
-        var adminTabs = document.querySelectorAll('.admin-tab');
-        adminTabs.forEach(function(tab) {
-            tab.onclick = function() {
-                var tabName = tab.getAttribute('data-tab');
-                
-                adminTabs.forEach(function(t) {
-                    t.classList.remove('active');
-                });
-                tab.classList.add('active');
-                
-                var sections = document.querySelectorAll('.admin-section');
-                sections.forEach(function(section) {
-                    section.classList.remove('active');
-                });
-                
-                document.getElementById(tabName + 'Tab').classList.add('active');
-                
-                if (tabName === 'products') {
-                    loadProductsList();
-                } else if (tabName === 'users') {
-                    loadUsersList();
-                }
-            };
-        });
-        
-        // Agregar producto
-        var addProductForm = document.getElementById('addProductForm');
-        if (addProductForm) {
-            addProductForm.onsubmit = function(e) {
-                e.preventDefault();
-                
-                var newProduct = {
-                    title: document.getElementById('productTitle').value,
-                    description: document.getElementById('productDescription').value,
-                    price: document.getElementById('productPrice').value,
-                    image: document.getElementById('productImage').value,
-                    category: document.getElementById('productCategory').value,
-                    type: document.getElementById('productType').value
-                };
-                
-                products.push(newProduct);
-                saveToStorage('xrstore_products', products);
-                
-                alert('Producto "' + newProduct.title + '" agregado exitosamente');
-                
-                document.getElementById('productTitle').value = '';
-                document.getElementById('productDescription').value = '';
-                document.getElementById('productPrice').value = '';
-                document.getElementById('productImage').value = '';
-                document.getElementById('productCategory').value = 'mta';
-                document.getElementById('productType').value = 'scripts';
-                
-                renderProducts();
-                loadProductsList();
-                
-                return false;
-            };
-        }
-        
-        // Editar producto
-        var editProductForm = document.getElementById('editProductForm');
-        if (editProductForm) {
-            editProductForm.onsubmit = function(e) {
-                e.preventDefault();
-                
-                var index = parseInt(document.getElementById('editProductIndex').value);
-                
-                products[index] = {
-                    title: document.getElementById('editProductTitle').value,
-                    description: document.getElementById('editProductDescription').value,
-                    price: document.getElementById('editProductPrice').value,
-                    image: document.getElementById('editProductImage').value,
-                    category: document.getElementById('editProductCategory').value,
-                    type: document.getElementById('editProductType').value
-                };
-                
-                saveToStorage('xrstore_products', products);
-                
-                alert('Producto actualizado exitosamente');
-                
-                editProductModal.style.display = 'none';
-                renderProducts();
-                loadProductsList();
-                
-                return false;
-            };
-        }
-        
-        // Cargar lista de usuarios
-        function loadUsersList() {
-            var usersList = document.getElementById('usersList');
-            usersList.innerHTML = '';
+        users.forEach(function(user, index) {
+            var userItem = document.createElement('div');
+            userItem.className = 'user-item';
             
-            users.forEach(function(user, index) {
-                var userItem = document.createElement('div');
-                userItem.className = 'user-item';
-                
-                var userInfo = document.createElement('div');
-                var userName = document.createElement('strong');
-                userName.textContent = user.username;
-                userName.style.color = '#fff';
-                
-                var userRole = document.createElement('span');
-                userRole.className = 'user-role role-' + user.role;
-                userRole.textContent = user.role.toUpperCase();
-                
-                userInfo.appendChild(userName);
-                userInfo.appendChild(userRole);
-                
-                var userActions = document.createElement('div');
-                
-                if (currentUser && currentUser.role === 'admin') {
-                    if (user.role === 'user') {
-                        var promoteBtn = document.createElement('button');
-                        promoteBtn.className = 'btn-action btn-promote';
-                        promoteBtn.textContent = 'Hacer Admin';
-                        promoteBtn.onclick = function() {
-                            users[index].role = 'admin';
-                            saveToStorage('xrstore_users', users);
-                            alert('Usuario ' + user.username + ' ahora es administrador');
-                            loadUsersList();
-                        };
-                        userActions.appendChild(promoteBtn);
-                    } else if (user.role === 'admin' && user.username !== currentUser.username) {
-                        var demoteBtn = document.createElement('button');
-                        demoteBtn.className = 'btn-action btn-demote';
-                        demoteBtn.textContent = 'Quitar Admin';
-                        demoteBtn.onclick = function() {
-                            users[index].role = 'user';
-                            saveToStorage('xrstore_users', users);
-                            alert('Usuario ' + user.username + ' ahora es usuario normal');
-                            loadUsersList();
-                        };
-                        userActions.appendChild(demoteBtn);
-                    }
-                    
-                    if (user.username !== currentUser.username) {
-                        var deleteBtn = document.createElement('button');
-                        deleteBtn.className = 'btn-action btn-delete';
-                        deleteBtn.textContent = 'Eliminar';
-                        deleteBtn.onclick = function() {
-                            if (confirm('¿Seguro que deseas eliminar a ' + user.username + '?')) {
-                                users.splice(index, 1);
-                                saveToStorage('xrstore_users', users);
-                                alert('Usuario ' + user.username + ' eliminado');
-                                loadUsersList();
-                            }
-                        };
-                        userActions.appendChild(deleteBtn);
-                    }
-                }
-                
-                userItem.appendChild(userInfo);
-                userItem.appendChild(userActions);
-                usersList.appendChild(userItem);
-            });
-        }
-        
-        // Cargar lista de productos
-        function loadProductsList() {
-            var productsList = document.getElementById('productsList');
-            productsList.innerHTML = '';
-            
-            if (products.length === 0) {
-                productsList.innerHTML = '<p style="color: #999; text-align: center; padding: 2rem;">No hay productos disponibles</p>';
-                return;
-            }
-            
-            products.forEach(function(product, index) {
-                var productItem = document.createElement('div');
-                productItem.className = 'product-item';
-                
-                var header = document.createElement('div');
-                header.className = 'product-item-header';
-                
-                var info = document.createElement('div');
-                info.className = 'product-item-info';
-                
-                var title = document.createElement('h4');
-                title.textContent = product.title;
-                
-                var description = document.createElement('p');
-                description.textContent = product.description;
-                
-                var price = document.createElement('p');
-                price.innerHTML = '<strong style="color: #ff0a0a;">' + product.price + '</strong>';
-                
-                info.appendChild(title);
-                info.appendChild(description);
-                info.appendChild(price);
-                
-                var actions = document.createElement('div');
-                
-                if (currentUser && currentUser.role === 'admin') {
-                    var editBtn = document.createElement('button');
-                    editBtn.className = 'btn-action btn-edit';
-                    editBtn.textContent = 'Editar';
-                    editBtn.onclick = function() {
-                        openEditProductModal(index);
+            var userInfo = document.createElement('div');
+            userInfo.innerHTML = `
+                <strong style="color: #fff">${user.username}</strong>
+                <span class="user-role role-${user.role}">${user.role.toUpperCase()}</span>
+            `;
+
+            var actions = document.createElement('div');
+
+            // ★★★ FIX — PROMOVER A ADMIN
+            if (currentUser.role === 'admin') {
+
+                if (user.role === 'user') {
+                    var promoteBtn = document.createElement('button');
+                    promoteBtn.className = 'btn-action btn-promote';
+                    promoteBtn.textContent = 'Hacer Admin';
+                    promoteBtn.onclick = function() {
+
+                        users[index].role = 'admin';
+                        saveToStorage('xrstore_users', users);
+
+                        if (currentUser.username === user.username) {
+                            currentUser.role = 'admin';
+                            saveToStorage('xrstore_session', { username: currentUser.username });
+                            updateUIForLoggedInUser(); // <--- FIX 🔥
+                        }
+
+                        loadUsersList();
                     };
-                    
+                    actions.appendChild(promoteBtn);
+                }
+
+                // ★★★ FIX — QUITAR ADMIN
+                if (user.role === 'admin' && user.username !== currentUser.username) {
+                    var demoteBtn = document.createElement('button');
+                    demoteBtn.className = 'btn-action btn-demote';
+                    demoteBtn.textContent = 'Quitar Admin';
+                    demoteBtn.onclick = function() {
+
+                        users[index].role = 'user';
+                        saveToStorage('xrstore_users', users);
+
+                        if (currentUser.username === user.username) {
+                            currentUser.role = 'user';
+                            saveToStorage('xrstore_session', { username: currentUser.username });
+                            updateUIForLoggedOutUser(); // <--- FIX 🔥
+                        }
+
+                        loadUsersList();
+                    };
+                    actions.appendChild(demoteBtn);
+                }
+
+                // ELIMINAR
+                if (user.username !== currentUser.username) {
                     var deleteBtn = document.createElement('button');
                     deleteBtn.className = 'btn-action btn-delete';
                     deleteBtn.textContent = 'Eliminar';
                     deleteBtn.onclick = function() {
-                        if (confirm('¿Seguro que deseas eliminar "' + product.title + '"?')) {
-                            products.splice(index, 1);
-                            saveToStorage('xrstore_products', products);
-                            alert('Producto "' + product.title + '" eliminado');
-                            renderProducts();
-                            loadProductsList();
+                        if (confirm('Eliminar usuario?')) {
+                            users.splice(index, 1);
+                            saveToStorage('xrstore_users', users);
+                            loadUsersList();
                         }
                     };
-                    
-                    actions.appendChild(editBtn);
                     actions.appendChild(deleteBtn);
                 }
-                
-                header.appendChild(info);
-                header.appendChild(actions);
-                
-                var meta = document.createElement('div');
-                meta.className = 'product-item-meta';
-                
-                var categoryBadge = document.createElement('span');
-                categoryBadge.className = 'product-badge badge-category';
-                categoryBadge.textContent = product.category.toUpperCase();
-                
-                var typeBadge = document.createElement('span');
-                typeBadge.className = 'product-badge badge-type';
-                typeBadge.textContent = product.type;
-                
-                meta.appendChild(categoryBadge);
-                meta.appendChild(typeBadge);
-                
-                if (product.image && product.image.trim() !== '') {
-                    var imageBadge = document.createElement('span');
-                    imageBadge.className = 'product-badge';
-                    imageBadge.style.background = '#2196F3';
-                    imageBadge.style.color = '#fff';
-                    imageBadge.textContent = '📷 Con imagen';
-                    meta.appendChild(imageBadge);
-                }
-                
-                productItem.appendChild(header);
-                productItem.appendChild(meta);
-                productsList.appendChild(productItem);
-            });
-        }
+            }
+
+            userItem.appendChild(userInfo);
+            userItem.appendChild(actions);
+
+            usersList.appendChild(userItem);
+        });
+    }
+
+    // ** PANEL ADMIN: Cargar Productos **
+    function loadProductsList() {
+        var list = document.getElementById('productsList');
+        list.innerHTML = '';
+
+        products.forEach(function(product, index) {
+            var item = document.createElement('div');
+            item.className = 'product-item';
+
+            item.innerHTML = `
+                <div class="product-item-header">
+                    <div class="product-item-info">
+                        <h4>${product.title}</h4>
+                        <p>${product.description}</p>
+                        <p><strong style="color:#ff0a0a">${product.price}</strong></p>
+                    </div>
+
+                    <div>
+                        <button class="btn-action btn-edit" onclick="openEditProductModal(${index})">Editar</button>
+                        <button class="btn-action btn-delete" onclick="deleteProduct(${index})">Eliminar</button>
+                    </div>
+                </div>
+
+                <div class="product-item-meta">
+                    <span class="product-badge badge-category">${product.category.toUpperCase()}</span>
+                    <span class="product-badge badge-type">${product.type}</span>
+                </div>
+            `;
+
+            list.appendChild(item);
+        });
+    }
+
+    // Editar producto
+    function openEditProductModal(index) {
+        var product = products[index];
         
-        // Abrir modal de edición
-        function openEditProductModal(index) {
-            var product = products[index];
-            
-            document.getElementById('editProductIndex').value = index;
-            document.getElementById('editProductTitle').value = product.title;
-            document.getElementById('editProductDescription').value = product.description;
-            document.getElementById('editProductPrice').value = product.price;
-            document.getElementById('editProductImage').value = product.image || '';
-            document.getElementById('editProductCategory').value = product.category;
-            document.getElementById('editProductType').value = product.type;
-            
-            editProductModal.style.display = 'block';
-        }
-        
-        // Renderizar productos al cargar la página
+        document.getElementById('editProductIndex').value = index;
+        editProductTitle.value = product.title;
+        editProductDescription.value = product.description;
+        editProductPrice.value = product.price;
+        editProductImage.value = product.image;
+        editProductCategory.value = product.category;
+        editProductType.value = product.type;
+
+        editProductModal.style.display = 'block';
+    }
+
+    // Guardar edición
+    document.getElementById('editProductForm').onsubmit = function(e) {
+        e.preventDefault();
+
+        var index = editProductIndex.value;
+
+        products[index] = {
+            title: editProductTitle.value,
+            description: editProductDescription.value,
+            price: editProductPrice.value,
+            image: editProductImage.value,
+            category: editProductCategory.value,
+            type: editProductType.value
+        };
+
+        saveToStorage('xrstore_products', products);
+        loadProductsList();
         renderProducts();
-    </script>
+        editProductModal.style.display = 'none';
+    };
+
+    // Eliminar producto
+    function deleteProduct(index) {
+        if (confirm('¿Eliminar este producto?')) {
+            products.splice(index, 1);
+            saveToStorage('xrstore_products', products);
+            loadProductsList();
+            renderProducts();
+        }
+    }
+
+    // Agregar producto
+    document.getElementById('addProductForm').onsubmit = function(e) {
+        e.preventDefault();
+
+        var newProduct = {
+            title: productTitle.value,
+            description: productDescription.value,
+            price: productPrice.value,
+            image: productImage.value,
+            category: productCategory.value,
+            type: productType.value
+        };
+
+        products.push(newProduct);
+        saveToStorage('xrstore_products', products);
+
+        alert("Producto agregado");
+        loadProductsList();
+        renderProducts();
+    };
+
+    // Render inicial
+    renderProducts();
+</script>
 </body>
-</html><label>Título del Producto</label>
-                        <input type="text" id="productTitle" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Descripción</label>
-                        <textarea id="productDescription" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Precio (ejemplo: $10.00 o GRATIS)</label>
-                        <input type="text" id="productPrice" required placeholder="$10.00">
-                    </div>
-                    <div class="form-group">
-                        <label>URL de la Imagen</label>
-                        <input type="url" id="productImage" placeholder="https://ejemplo.com/imagen.jpg">
-                        <small>Deja vacío para usar el logo XR por defecto</small>
-                    </div>
-                    <div class="form-group">
-                        <label>Categoría</label>
-                        <select id="productCategory" required>
-                            <option value="mta">MTA</option>
-                            <option value="fivem">FiveM</option>
-                            <option value="samp">SAMP</option>
-                            <option value="anticheat">AntiCheat</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
+</html>
