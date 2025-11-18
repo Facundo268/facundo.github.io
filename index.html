@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XR Store</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ff0a0a 0%, #cc0000 50%, #ff0a0a 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+        nav {
+            background: rgba(255, 10, 10, 0.95);
+            padding: 1.2rem 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            border-bottom: 2px solid #fff;
+        }
+        nav .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { 
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: #ffffff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #ff0a0a;
+            box-shadow: 
+                0 0 20px rgba(255, 10, 10, 0.6),
+                0 4px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            transform: rotate(-5deg);
+        }
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,10,10,0.2), transparent);
+            animation: shine 3s infinite;
+        }
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        nav ul {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+            align-items: center;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        nav a:hover {
+            color: #ffcccc;
+        }
+        .btn-login, .btn-register {
+            background: #fff;
+            color: #ff0a0a;
+            border: none;
+            padding: 0.7rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+        }
+        .btn-login:hover, .btn-register:hover {
+            background: #ffcccc;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
+        }
+        .btn-register {
+            background: transparent;
+            border: 2px solid #fff;
+            color: #fff;
+        }
+        .btn-register:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .btn-logout {
+            background: #f44336;
+            color: #fff;
+            border: none;
+            padding: 0.7rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: none;
+        }
+        .btn-logout:hover {
+            background: #da190b;
+        }
+        .btn-admin {
+            background: #fff;
+            color: #ff0a0a;
+            border: 2px solid #fff;
+            padding: 0.7rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: none;
+            transition: all 0.3s;
+        }
+        .btn-admin:hover {
+            background: #ffcccc;
+        }
+        .hero {
+            padding: 140px 5% 60px;
+            text-align: center;
+            background: linear-gradient(135deg, #ff1a1a 0%, #ff4444 100%);
+        }
+        .hero h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 1rem; 
+            color: #fff;
+            font-weight: 700;
+        }
+        .hero p { 
+            font-size: 1.1rem; 
+            color: #fff;
+        }
+        .categories {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 5%;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .category-btn {
+            background: rgba(255, 255, 255, 0.9);
+            color: #ff0a0a;
+            border: 2px solid #fff;
+            padding: 0.8rem 2rem;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .category-btn:hover {
+            background: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        .category-btn.active {
+            background: #fff;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            transform: scale(1.05);
+        }
+        .filter-section {
+            max-width: 1400px;
+            margin: 1rem auto 0;
+            padding: 0 5%;
+            display: none;
+        }
+        .filter-section.active {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .filter-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: #fff;
+        }
+        .filter-btn.active {
+            background: #fff;
+            color: #ff0a0a;
+            border-color: #fff;
+        }
+        .products {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 5%;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 2rem;
+            background: linear-gradient(180deg, #ff1a1a 0%, #cc0000 100%);
+        }
+        .product-card {
+            background: #242424;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            transition: all 0.3s;
+            border: 2px solid #333;
+        }
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 30px rgba(255, 10, 10, 0.4);
+            border-color: #ff0a0a;
+        }
+        .product-image {
+            width: 100%;
+            height: 220px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border-bottom: 3px solid #ff0a0a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .product-image.has-custom-image {
+            background: none;
+        }
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .product-image::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255, 10, 10, 0.03) 10px,
+                rgba(255, 10, 10, 0.03) 20px
+            );
+        }
+        .product-logo {
+            width: 70px;
+            height: 70px;
+            background: #ffffff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: #ff0a0a;
+            box-shadow: 0 8px 25px rgba(255, 10, 10, 0.5);
+            position: relative;
+            z-index: 1;
+            transform: rotate(-5deg);
+        }
+        .product-content {
+            padding: 1.5rem;
+        }
+        .product-title { 
+            font-size: 1.3rem; 
+            margin-bottom: 0.5rem; 
+            color: #fff;
+            font-weight: 600;
+        }
+        .product-description { 
+            color: #aaa; 
+            font-size: 0.9rem; 
+            margin-bottom: 1.2rem;
+            line-height: 1.5;
+        }
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #333;
+        }
+        .price { 
+            font-size: 1.6rem; 
+            font-weight: 700; 
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .btn-buy {
+            background: #ff0a0a;
+            color: #fff;
+            border: none;
+            padding: 0.7rem 1.8rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(255, 10, 10, 0.3);
+        }
+        .btn-buy:hover {
+            background: #ff3333;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(255, 10, 10, 0.4);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            overflow-y: auto;
+        }
+        .modal-content {
+            background: #242424;
+            margin: 5% auto;
+            padding: 2.5rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.8);
+            border: 2px solid #ff0a0a;
+        }
+        .close-modal {
+            color: #999;
+            float: right;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .close-modal:hover {
+            color: #ff0a0a;
+        }
+        .modal h2 { 
+            text-align: center; 
+            margin-bottom: 2rem; 
+            color: #fff;
+            font-weight: 700;
+        }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { 
+            display: block; 
+            margin-bottom: 0.5rem; 
+            font-weight: 600;
+            color: #fff;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.9rem;
+            border: 2px solid #333;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            background: #1a1a1a;
+            color: #fff;
+            font-family: inherit;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-group small {
+            color: #999;
+            font-size: 0.85rem;
+            display: block;
+            margin-top: 0.3rem;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #ff0a0a;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background: #ff0a0a;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 10, 10, 0.3);
+        }
+        .btn-submit:hover {
+            background: #ff3333;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 10, 10, 0.4);
+        }
+        .form-link {
+            text-align: center;
+            margin-top: 1rem;
+            color: #ccc;
+        }
+        .form-link a {
+            color: #ff0a0a;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .form-link a:hover {
+            text-decoration: underline;
+        }
+        .admin-panel {
+            max-width: 900px;
+        }
+        .admin-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #333;
+            flex-wrap: wrap;
+        }
+        .admin-tab {
+            background: transparent;
+            color: #ccc;
+            border: none;
+            padding: 1rem 2rem;
+            cursor: pointer;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        .admin-tab.active {
+            border-bottom-color: #ff0a0a;
+            color: #ff0a0a;
+        }
+        .admin-section {
+            display: none;
+        }
+        .admin-section.active {
+            display: block;
+        }
+        .user-list, .product-list {
+            background: #1a1a1a;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+        }
+        .user-item, .product-item {
+            background: #2d2d2d;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .product-item {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .product-item-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.5rem;
+        }
+        .product-item-info h4 {
+            color: #fff;
+            margin-bottom: 0.3rem;
+        }
+        .product-item-info p {
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+        .product-item-meta {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        .product-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-category {
+            background: #ff0a0a;
+            color: #fff;
+        }
+        .badge-type {
+            background: #4CAF50;
+            color: #fff;
+        }
+        .user-role {
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-left: 1rem;
+            font-weight: 600;
+        }
+        .role-admin {
+            background: #ff0a0a;
+            color: #fff;
+        }
+        .role-user {
+            background: #e0e0e0;
+            color: #666;
+        }
+        .btn-action {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-left: 0.5rem;
+            transition: all 0.3s;
+        }
+        .btn-promote {
+            background: #4CAF50;
+            color: #fff;
+        }
+        .btn-promote:hover {
+            background: #45a049;
+        }
+        .btn-demote {
+            background: #ff9800;
+            color: #fff;
+        }
+        .btn-demote:hover {
+            background: #e68900;
+        }
+        .btn-edit {
+            background: #2196F3;
+            color: #fff;
+        }
+        .btn-edit:hover {
+            background: #0b7dda;
+        }
+        .btn-delete {
+            background: #f44336;
+            color: #fff;
+        }
+        .btn-delete:hover {
+            background: #da190b;
+        }
+        footer {
+            background: #ff0a0a;
+            padding: 2rem 5%;
+            text-align: center;
+            margin-top: 4rem;
+            border-top: 2px solid #fff;
+            color: #fff;
+        }
+        footer a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        footer a:hover {
+            color: #ffcccc;
+        }
+        .success-message {
+            background: #4CAF50;
+            color: #fff;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+            display: none;
+        }
+        .error-message {
+            background: #f44336;
+            color: #fff;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">XR</div>
+                <span class="logo-text">XR Store</span>
+            </div>
+            <ul>
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#productos">Productos</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+                <li><button class="btn-register" id="registerBtn">Registrarse</button></li>
+                <li><button class="btn-login" id="loginBtn">Iniciar Sesión</button></li>
+                <li><button class="btn-admin" id="adminBtn">Panel Admin</button></li>
+                <li><button class="btn-logout" id="logoutBtn">Cerrar Sesión</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero" id="inicio">
+        <h1>Mapeos Premium para tu Servidor</h1>
+        <p>Los mejores mapeos personalizados para MTA, FiveM y SAMP</p>
+    </section>
+
+    <section class="categories">
+        <button class="category-btn active" data-category="all">Todos</button>
+        <button class="category-btn" data-category="mta">MTA</button>
+        <button class="category-btn" data-category="fivem">FiveM</button>
+        <button class="category-btn" data-category="samp">SAMP</button>
+        <button class="category-btn" data-category="anticheat">AntiCheat</button>
+    </section>
+
+    <section id="mtaFilters" class="filter-section">
+        <button class="filter-btn active" data-filter="all">Todos</button>
+        <button class="filter-btn" data-filter="scripts">Scripts</button>
+        <button class="filter-btn" data-filter="mapeos">Mapeos</button>
+    </section>
+
+    <section id="fivemFilters" class="filter-section">
+        <button class="filter-btn active" data-filter="all">Todos</button>
+        <button class="filter-btn" data-filter="scripts">Scripts</button>
+        <button class="filter-btn" data-filter="mapeos">Mapeos</button>
+    </section>
+
+    <section id="sampFilters" class="filter-section">
+        <button class="filter-btn active" data-filter="all">Todos</button>
+        <button class="filter-btn" data-filter="scripts">Scripts</button>
+        <button class="filter-btn" data-filter="mapeos">Mapeos</button>
+    </section>
+
+    <section class="products" id="productos"></section>
+
+    <footer id="contacto">
+        <p>© 2024 XR Store. Todos los derechos reservados.</p>
+        <div style="margin-top: 1.5rem; display: flex; gap: 2rem; justify-content: center; align-items: center; flex-wrap: wrap;">
+            <a href="https://discord.gg/hgNWhj9ZB5" target="_blank" style="display: inline-flex; align-items: center; gap: 0.8rem; text-decoration: none;">
+                <div style="width: 45px; height: 45px; background: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); transform: rotate(-5deg);">
+                    <span style="font-weight: 900; font-size: 1.3rem; color: #5865F2;">DC</span>
+                </div>
+                <span style="color: #fff; font-weight: bold; font-size: 1.1rem;">Discord</span>
+            </a>
+            
+            <span style="color: rgba(255,255,255,0.5); font-size: 1.5rem;">|</span>
+            
+            <a href="mailto:xrstore881@gmail.com" style="display: inline-flex; align-items: center; gap: 0.8rem; text-decoration: none;">
+                <div style="width: 45px; height: 45px; background: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); transform: rotate(-5deg);">
+                    <span style="font-weight: 900; font-size: 1.3rem; color: #EA4335;">@</span>
+                </div>
+                <span style="color: #fff; font-weight: bold; font-size: 1.1rem;">xrstore881@gmail.com</span>
+            </a>
+        </div>
+    </footer>
+
+    <!-- Modal Registro -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeRegister">&times;</span>
+            <h2>Crear Cuenta</h2>
+            <div class="success-message" id="registerSuccess"></div>
+            <div class="error-message" id="registerError"></div>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label>Usuario</label>
+                    <input type="text" id="regUsername" required minlength="3">
+                    <small>Mínimo 3 caracteres</small>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="regPassword" required minlength="6">
+                    <small>Mínimo 6 caracteres</small>
+                </div>
+                <div class="form-group">
+                    <label>Confirmar Contraseña</label>
+                    <input type="password" id="regConfirmPassword" required>
+                </div>
+                <button type="submit" class="btn-submit">Registrarse</button>
+            </form>
+            <div class="form-link">
+                ¿Ya tienes cuenta? <a href="#" id="goToLogin">Inicia sesión</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Login -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeLogin">&times;</span>
+            <h2>Iniciar Sesión</h2>
+            <div class="error-message" id="loginError"></div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Usuario</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn-submit">Entrar</button>
+            </form>
+            <div class="form-link">
+                ¿No tienes cuenta? <a href="#" id="goToRegister">Regístrate</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Admin Panel -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content admin-panel">
+            <span class="close-modal" id="closeAdmin">&times;</span>
+            <h2>Panel de Administración</h2>
+            
+            <div class="admin-tabs">
+                <button class="admin-tab active" data-tab="users">Usuarios</button>
+                <button class="admin-tab" data-tab="products">Gestionar Productos</button>
+                <button class="admin-tab" data-tab="addProduct">Agregar Producto</button>
+            </div>
+
+            <!-- Tab Usuarios -->
+            <div id="usersTab" class="admin-section active">
+                <h3 style="color: #fff; margin-bottom: 1rem;">Usuarios Registrados</h3>
+                <div id="usersList" class="user-list"></div>
+            </div>
+
+            <!-- Tab Gestionar Productos -->
+            <div id="productsTab" class="admin-section">
+                <h3 style="color: #fff; margin-bottom: 1rem;">Productos Disponibles</h3>
+                <div id="productsList" class="product-list"></div>
+            </div>
+
+            <!-- Tab Agregar Producto -->
+            <div id="addProductTab" class="admin-section">
+                <h3 style="color: #fff; margin-bottom: 1rem;">Agregar Nuevo Producto</h3>
+                <form id="addProductForm">
+                    <div class="form-group">
+                        <label>Título del Producto</label>
+                        <input type="text" id="productTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <textarea id="productDescription" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Precio (ejemplo: $10.00 o GRATIS)</label>
+                        <input type="text" id="productPrice" required placeholder="$10.00">
+                    </div>
+                    <div class="form-group">
+                        <label>URL de la Imagen</label>
+                        <input type="url" id="productImage" placeholder="https://ejemplo.com/imagen.jpg">
+                        <small>Deja vacío para usar el logo XR por defecto</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <select id="productCategory" required>
+                            <option value="mta">MTA</option>
+                            <option value="fivem">FiveM</option>
+                            <option value="samp">SAMP</option>
+                            <option value="anticheat">AntiCheat</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo</label>
+                        <select id="productType" required>
+                            <option value="scripts">Scripts</option>
+                            <option value="mapeos">Mapeos</option>
+                            <option value="anticheat">AntiCheat</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-submit">Agregar Producto</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Producto -->
+    <div id="editProductModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeEditProduct">&times;</span>
+            <h2>Editar Producto</h2>
+            <form id="editProductForm">
+                <input type="hidden" id="editProductIndex">
+                <div class="form-group">
+                    <label>Título del Producto</label>
+                    <input type="text" id="editProductTitle" required>
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="editProductDescription" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Precio</label>
+                    <input type="text" id="editProductPrice" required>
+                </div>
+                <div class="form-group">
+                    <label>URL de la Imagen</label>
+                    <input type="url" id="editProductImage" placeholder="https://ejemplo.com/imagen.jpg">
+                    <small>Deja vacío para usar el logo XR por defecto</small>
+                </div>
+                <div class="form-group">
+                    <label>Categoría</label>
+                    <select id="editProductCategory" required>
+                        <option value="mta">MTA</option>
+                        <option value="fivem">FiveM</option>
+                        <option value="samp">SAMP</option>
+                        <option value="anticheat">AntiCheat</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tipo</label>
+                    <select id="editProductType" required>
+                        <option value="scripts">Scripts</option>
+                        <option value="mapeos">Mapeos</option>
+                        <option value="anticheat">AntiCheat</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-submit">Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Sistema de almacenamiento
+        function saveToStorage(key, data) {
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        function getFromStorage(key) {
+            var data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : null;
+        }
+
+        // Inicializar datos
+        function initializeData() {
+            // Cargar usuarios o crear admin por defecto
+            var users = getFromStorage('xrstore_users');
+            if (!users) {
+                users = [
+                    { username: 'admin', password: 'admin123', role: 'admin' }
+                ];
+                saveToStorage('xrstore_users', users);
+            }
+            
+            // Cargar productos o crear productos por defecto
+            var products = getFromStorage('xrstore_products');
+            if (!products) {
+                products = [
+                    // MTA - Scripts
+                    { title: 'Sistema de Inventario', description: 'Sistema completo de inventario para MTA', price: '$16.00', category: 'mta', type: 'scripts', image: '' },
+                    { title: 'Sistema de Trabajos', description: 'Múltiples trabajos para roleplay MTA', price: '$20.00', category: 'mta', type: 'scripts', image: '' },
+                    
+                    // MTA - Mapeos
+                    { title: 'Apartamentos Modernos', description: 'Sistema completo de apartamentos con interiores editables', price: 'GRATIS', category: 'mta', type: 'mapeos', image: '' },
+                    { title: 'Tienditas Pack', description: 'Pack de 10 tiendas pequeñas personalizables', price: '$8.00', category: 'mta', type: 'mapeos', image: '' },
+                    
+                    // FiveM - Scripts
+                    { title: 'HUD Premium', description: 'Interfaz HUD moderna y personalizable para FiveM', price: '$15.00', category: 'fivem', type: 'scripts', image: '' },
+                    { title: 'Sistema de Policía', description: 'Sistema completo de policía para FiveM', price: '$25.00', category: 'fivem', type: 'scripts', image: '' },
+                    
+                    // FiveM - Mapeos
+                    { title: 'Casa de Lujo', description: 'Interior de casa moderna de lujo', price: '$14.00', category: 'fivem', type: 'mapeos', image: '' },
+                    
+                    // SAMP
+                    { title: 'Sistema de Facciones', description: 'Sistema completo de facciones para SAMP', price: '$19.00', category: 'samp', type: 'scripts', image: '' },
+                    
+                    // AntiCheat
+                    { title: 'AntiCheat Pro MTA', description: 'Sistema anti-trampas avanzado para MTA', price: '$30.00', category: 'anticheat', type: 'anticheat', image: '' }
+                ];
+                saveToStorage('xrstore_products', products);
+            }
+            
+            return { users: users, products: products };
+        }
+
+        var data = initializeData();
+        var users = data.users;
+        var products = data.products;
+        var currentUser = null;
+        var currentCategory = 'all';
+        var currentFilter = 'all';
+        
+        // Verificar sesión guardada
+        var savedSession = getFromStorage('xrstore_session');
+        if (savedSession) {
+            // Buscar el usuario actualizado en el array de usuarios
+            var foundUser = users.find(function(u) { return u.username === savedSession.username; });
+            if (foundUser) {
+                // Usar directamente el objeto del array para tener el rol actualizado
+                currentUser = foundUser;
+                updateUIForLoggedInUser();
+            }
+        }
+
+        function updateUIForLoggedInUser() {
+            document.getElementById('loginBtn').style.display = 'none';
+            document.getElementById('registerBtn').style.display = 'none';
+            document.getElementById('logoutBtn').style.display = 'block';
+            document.getElementById('logoutBtn').textContent = currentUser.username;
+            
+            if (currentUser.role === 'admin') {
+                document.getElementById('adminBtn').style.display = 'block';
+            } else {
+                document.getElementById('adminBtn').style.display = 'none';
+            }
+        }
+
+        function updateUIForLoggedOutUser() {
+            document.getElementById('loginBtn').style.display = 'block';
+            document.getElementById('registerBtn').style.display = 'block';
+            document.getElementById('logoutBtn').style.display = 'none';
+            document.getElementById('adminBtn').style.display = 'none';
+        }
+
+        // Función para renderizar productos
+        function renderProducts() {
+            var productsContainer = document.getElementById('productos');
+            productsContainer.innerHTML = '';
+            
+            var filteredProducts = products.filter(function(product) {
+                var categoryMatch = currentCategory === 'all' || product.category === currentCategory;
+                var filterMatch = currentFilter === 'all' || product.type === currentFilter;
+                return categoryMatch && filterMatch;
+            });
+            
+            filteredProducts.forEach(function(product) {
+                var card = document.createElement('div');
+                card.className = 'product-card';
+                
+                var imageHtml = '';
+                if (product.image && product.image.trim() !== '') {
+                    imageHtml = '<div class="product-image has-custom-image"><img src="' + product.image + '" alt="' + product.title + '" onerror="this.parentElement.classList.remove(\'has-custom-image\'); this.remove(); var logo = document.createElement(\'div\'); logo.className = \'product-logo\'; logo.textContent = \'XR\'; this.parentElement.appendChild(logo);"></div>';
+                } else {
+                    imageHtml = '<div class="product-image"><div class="product-logo">XR</div></div>';
+                }
+                
+                card.innerHTML = imageHtml +
+                    '<div class="product-content">' +
+                        '<h3 class="product-title">' + product.title + '</h3>' +
+                        '<p class="product-description">' + product.description + '</p>' +
+                        '<div class="product-footer">' +
+                            '<span class="price">' + product.price + '</span>' +
+                            '<button class="btn-buy">' + (product.price === 'GRATIS' ? 'Descargar' : 'Comprar') + '</button>' +
+                        '</div>' +
+                    '</div>';
+                
+                productsContainer.appendChild(card);
+            });
+            
+            var buyButtons = document.querySelectorAll('.btn-buy');
+            buyButtons.forEach(function(btn) {
+                btn.onclick = function() {
+                    var card = this.closest('.product-card');
+                    var title = card.querySelector('.product-title').textContent;
+                    alert('Gracias por tu interés en ' + title + '. Contacta con nosotros para completar la compra.');
+                };
+            });
+        }
+        
+        // Manejadores de categorías
+        var categoryBtns = document.querySelectorAll('.category-btn');
+        categoryBtns.forEach(function(btn) {
+            btn.onclick = function() {
+                categoryBtns.forEach(function(b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                
+                currentCategory = btn.getAttribute('data-category');
+                currentFilter = 'all';
+                
+                document.querySelectorAll('.filter-section').forEach(function(section) {
+                    section.classList.remove('active');
+                });
+                
+                document.querySelectorAll('.filter-btn').forEach(function(fb) {
+                    fb.classList.remove('active');
+                    if (fb.getAttribute('data-filter') === 'all') {
+                        fb.classList.add('active');
+                    }
+                });
+                
+                if (currentCategory === 'mta') {
+                    document.getElementById('mtaFilters').classList.add('active');
+                } else if (currentCategory === 'fivem') {
+                    document.getElementById('fivemFilters').classList.add('active');
+                } else if (currentCategory === 'samp') {
+                    document.getElementById('sampFilters').classList.add('active');
+                }
+                
+                renderProducts();
+            };
+        });
+        
+        // Manejadores de filtros
+        var filterBtns = document.querySelectorAll('.filter-btn');
+        filterBtns.forEach(function(btn) {
+            btn.onclick = function() {
+                var section = btn.closest('.filter-section');
+                section.querySelectorAll('.filter-btn').forEach(function(b) {
+                    b.classList.remove('active');
+                });
+                btn.classList.add('active');
+                
+                currentFilter = btn.getAttribute('data-filter');
+                renderProducts();
+            };
+        });
+        
+        // Modales
+        var registerModal = document.getElementById('registerModal');
+        var loginModal = document.getElementById('loginModal');
+        var adminModal = document.getElementById('adminModal');
+        var editProductModal = document.getElementById('editProductModal');
+        
+        var registerBtn = document.getElementById('registerBtn');
+        var loginBtn = document.getElementById('loginBtn');
+        var adminBtn = document.getElementById('adminBtn');
+        var logoutBtn = document.getElementById('logoutBtn');
+        
+        var closeRegister = document.getElementById('closeRegister');
+        var closeLogin = document.getElementById('closeLogin');
+        var closeAdmin = document.getElementById('closeAdmin');
+        var closeEditProduct = document.getElementById('closeEditProduct');
+        
+        if (registerBtn) {
+            registerBtn.onclick = function() {
+                registerModal.style.display = 'block';
+                document.getElementById('registerError').style.display = 'none';
+                document.getElementById('registerSuccess').style.display = 'none';
+            };
+        }
+        
+        if (loginBtn) {
+            loginBtn.onclick = function() {
+                loginModal.style.display = 'block';
+                document.getElementById('loginError').style.display = 'none';
+            };
+        }
+        
+        if (adminBtn) {
+            adminBtn.onclick = function() {
+                adminModal.style.display = 'block';
+                loadUsersList();
+                loadProductsList();
+            };
+        }
+
+        if (logoutBtn) {
+            logoutBtn.onclick = function() {
+                if (confirm('¿Seguro que deseas cerrar sesión?')) {
+                    currentUser = null;
+                    localStorage.removeItem('xrstore_session');
+                    updateUIForLoggedOutUser();
+                    alert('Sesión cerrada exitosamente');
+                }
+            };
+        }
+        
+        if (closeRegister) {
+            closeRegister.onclick = function() {
+                registerModal.style.display = 'none';
+            };
+        }
+        
+        if (closeLogin) {
+            closeLogin.onclick = function() {
+                loginModal.style.display = 'none';
+            };
+        }
+        
+        if (closeAdmin) {
+            closeAdmin.onclick = function() {
+                adminModal.style.display = 'none';
+            };
+        }
+        
+        if (closeEditProduct) {
+            closeEditProduct.onclick = function() {
+                editProductModal.style.display = 'none';
+            };
+        }
+        
+        window.onclick = function(event) {
+            if (event.target == registerModal) registerModal.style.display = 'none';
+            if (event.target == loginModal) loginModal.style.display = 'none';
+            if (event.target == adminModal) adminModal.style.display = 'none';
+            if (event.target == editProductModal) editProductModal.style.display = 'none';
+        };
+
+        // Cambiar entre login y registro
+        document.getElementById('goToLogin').onclick = function(e) {
+            e.preventDefault();
+            registerModal.style.display = 'none';
+            loginModal.style.display = 'block';
+        };
+
+        document.getElementById('goToRegister').onclick = function(e) {
+            e.preventDefault();
+            loginModal.style.display = 'none';
+            registerModal.style.display = 'block';
+        };
+        
+        // Registro
+        var registerForm = document.getElementById('registerForm');
+        if (registerForm) {
+            registerForm.onsubmit = function(e) {
+                e.preventDefault();
+                
+                var username = document.getElementById('regUsername').value.trim();
+                var password = document.getElementById('regPassword').value;
+                var confirmPassword = document.getElementById('regConfirmPassword').value;
+                
+                var errorMsg = document.getElementById('registerError');
+                var successMsg = document.getElementById('registerSuccess');
+                
+                errorMsg.style.display = 'none';
+                successMsg.style.display = 'none';
+                
+                // Validaciones
+                if (username.length < 3) {
+                    errorMsg.textContent = 'El usuario debe tener al menos 3 caracteres';
+                    errorMsg.style.display = 'block';
+                    return false;
+                }
+                
+                if (password.length < 6) {
+                    errorMsg.textContent = 'La contraseña debe tener al menos 6 caracteres';
+                    errorMsg.style.display = 'block';
+                    return false;
+                }
+                
+                if (password !== confirmPassword) {
+                    errorMsg.textContent = 'Las contraseñas no coinciden';
+                    errorMsg.style.display = 'block';
+                    return false;
+                }
+                
+                // Verificar si el usuario ya existe
+                var userExists = users.some(function(u) { return u.username === username; });
+                
+                if (userExists) {
+                    errorMsg.textContent = 'El usuario ya existe';
+                    errorMsg.style.display = 'block';
+                    return false;
+                }
+                
+                // Crear nuevo usuario
+                var newUser = {
+                    username: username,
+                    password: password,
+                    role: 'user'
+                };
+                
+                users.push(newUser);
+                saveToStorage('xrstore_users', users);
+                
+                successMsg.textContent = '¡Cuenta creada exitosamente! Redirigiendo al login...';
+                successMsg.style.display = 'block';
+                
+                document.getElementById('regUsername').value = '';
+                document.getElementById('regPassword').value = '';
+                document.getElementById('regConfirmPassword').value = '';
+                
+                setTimeout(function() {
+                    registerModal.style.display = 'none';
+                    loginModal.style.display = 'block';
+                    document.getElementById('username').value = username;
+                }, 2000);
+                
+                return false;
+            };
+        }
+        
+        // Login
+        var loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.onsubmit = function(e) {
+                e.preventDefault();
+                
+                var username = document.getElementById('username').value.trim();
+                var password = document.getElementById('password').value;
+                
+                var errorMsg = document.getElementById('loginError');
+                errorMsg.style.display = 'none';
+                
+                var foundUser = users.find(function(u) {
+                    return u.username === username && u.password === password;
+                });
+                
+                if (foundUser) {
+                    // Guardar referencia directa al objeto en el array
+                    currentUser = foundUser;
+                    saveToStorage('xrstore_session', { username: username });
+                    
+                    alert('¡Bienvenido ' + username + '!');
+                    loginModal.style.display = 'none';
+                    
+                    updateUIForLoggedInUser();
+                    
+                    document.getElementById('username').value = '';
+                    document.getElementById('password').value = '';
+                } else {
+                    errorMsg.textContent = 'Usuario o contraseña incorrectos';
+                    errorMsg.style.display = 'block';
+                }
+                
+                return false;
+            };
+        }
+        
+        // Tabs del panel admin
+        var adminTabs = document.querySelectorAll('.admin-tab');
+        adminTabs.forEach(function(tab) {
+            tab.onclick = function() {
+                var tabName = tab.getAttribute('data-tab');
+                
+                adminTabs.forEach(function(t) {
+                    t.classList.remove('active');
+                });
+                tab.classList.add('active');
+                
+                var sections = document.querySelectorAll('.admin-section');
+                sections.forEach(function(section) {
+                    section.classList.remove('active');
+                });
+                
+                document.getElementById(tabName + 'Tab').classList.add('active');
+                
+                if (tabName === 'products') {
+                    loadProductsList();
+                } else if (tabName === 'users') {
+                    loadUsersList();
+                }
+            };
+        });
+        
+        // Agregar producto
+        var addProductForm = document.getElementById('addProductForm');
+        if (addProductForm) {
+            addProductForm.onsubmit = function(e) {
+                e.preventDefault();
+                
+                var newProduct = {
+                    title: document.getElementById('productTitle').value,
+                    description: document.getElementById('productDescription').value,
+                    price: document.getElementById('productPrice').value,
+                    image: document.getElementById('productImage').value,
+                    category: document.getElementById('productCategory').value,
+                    type: document.getElementById('productType').value
+                };
+                
+                products.push(newProduct);
+                saveToStorage('xrstore_products', products);
+                
+                alert('Producto "' + newProduct.title + '" agregado exitosamente');
+                
+                document.getElementById('productTitle').value = '';
+                document.getElementById('productDescription').value = '';
+                document.getElementById('productPrice').value = '';
+                document.getElementById('productImage').value = '';
+                document.getElementById('productCategory').value = 'mta';
+                document.getElementById('productType').value = 'scripts';
+                
+                renderProducts();
+                loadProductsList();
+                
+                return false;
+            };
+        }
+        
+        // Editar producto
+        var editProductForm = document.getElementById('editProductForm');
+        if (editProductForm) {
+            editProductForm.onsubmit = function(e) {
+                e.preventDefault();
+                
+                var index = parseInt(document.getElementById('editProductIndex').value);
+                
+                products[index] = {
+                    title: document.getElementById('editProductTitle').value,
+                    description: document.getElementById('editProductDescription').value,
+                    price: document.getElementById('editProductPrice').value,
+                    image: document.getElementById('editProductImage').value,
+                    category: document.getElementById('editProductCategory').value,
+                    type: document.getElementById('editProductType').value
+                };
+                
+                saveToStorage('xrstore_products', products);
+                
+                alert('Producto actualizado exitosamente');
+                
+                editProductModal.style.display = 'none';
+                renderProducts();
+                loadProductsList();
+                
+                return false;
+            };
+        }
+        
+        // Cargar lista de usuarios
+        function loadUsersList() {
+            var usersList = document.getElementById('usersList');
+            usersList.innerHTML = '';
+            
+            users.forEach(function(user, index) {
+                var userItem = document.createElement('div');
+                userItem.className = 'user-item';
+                
+                var userInfo = document.createElement('div');
+                var userName = document.createElement('strong');
+                userName.textContent = user.username;
+                userName.style.color = '#fff';
+                
+                var userRole = document.createElement('span');
+                userRole.className = 'user-role role-' + user.role;
+                userRole.textContent = user.role.toUpperCase();
+                
+                userInfo.appendChild(userName);
+                userInfo.appendChild(userRole);
+                
+                var userActions = document.createElement('div');
+                
+                if (currentUser && currentUser.role === 'admin') {
+                    if (user.role === 'user') {
+                        var promoteBtn = document.createElement('button');
+                        promoteBtn.className = 'btn-action btn-promote';
+                        promoteBtn.textContent = 'Hacer Admin';
+                        promoteBtn.onclick = function() {
+                            users[index].role = 'admin';
+                            saveToStorage('xrstore_users', users);
+                            
+                            // Si el usuario promovido está actualmente logueado, actualizar currentUser
+                            if (currentUser && currentUser.username === user.username) {
+                                currentUser.role = 'admin';
+                                updateUIForLoggedInUser();
+                            }
+                            
+                            alert('Usuario ' + user.username + ' ahora es administrador');
+                            loadUsersList();
+                        };
+                        userActions.appendChild(promoteBtn);
+                    } else if (user.role === 'admin' && user.username !== currentUser.username) {
+                        var demoteBtn = document.createElement('button');
+                        demoteBtn.className = 'btn-action btn-demote';
+                        demoteBtn.textContent = 'Quitar Admin';
+                        demoteBtn.onclick = function() {
+                            users[index].role = 'user';
+                            saveToStorage('xrstore_users', users);
+                            
+                            // Si el usuario degradado está actualmente logueado, actualizar currentUser
+                            if (currentUser && currentUser.username === user.username) {
+                                currentUser.role = 'user';
+                                updateUIForLoggedInUser();
+                            }
+                            
+                            alert('Usuario ' + user.username + ' ahora es usuario normal');
+                            loadUsersList();
+                        };
+                        userActions.appendChild(demoteBtn);
+                    }
+                    
+                    if (user.username !== currentUser.username) {
+                        var deleteBtn = document.createElement('button');
+                        deleteBtn.className = 'btn-action btn-delete';
+                        deleteBtn.textContent = 'Eliminar';
+                        deleteBtn.onclick = function() {
+                            if (confirm('¿Seguro que deseas eliminar a ' + user.username + '?')) {
+                                users.splice(index, 1);
+                                saveToStorage('xrstore_users', users);
+                                alert('Usuario ' + user.username + ' eliminado');
+                                loadUsersList();
+                            }
+                        };
+                        userActions.appendChild(deleteBtn);
+                    }
+                }
+                
+                userItem.appendChild(userInfo);
+                userItem.appendChild(userActions);
+                usersList.appendChild(userItem);
+            });
+        }
+        
+        // Cargar lista de productos
+        function loadProductsList() {
+            var productsList = document.getElementById('productsList');
+            productsList.innerHTML = '';
+            
+            if (products.length === 0) {
+                productsList.innerHTML = '<p style="color: #999; text-align: center; padding: 2rem;">No hay productos disponibles</p>';
+                return;
+            }
+            
+            products.forEach(function(product, index) {
+                var productItem = document.createElement('div');
+                productItem.className = 'product-item';
+                
+                var header = document.createElement('div');
+                header.className = 'product-item-header';
+                
+                var info = document.createElement('div');
+                info.className = 'product-item-info';
+                
+                var title = document.createElement('h4');
+                title.textContent = product.title;
+                
+                var description = document.createElement('p');
+                description.textContent = product.description;
+                
+                var price = document.createElement('p');
+                price.innerHTML = '<strong style="color: #ff0a0a;">' + product.price + '</strong>';
+                
+                info.appendChild(title);
+                info.appendChild(description);
+                info.appendChild(price);
+                
+                var actions = document.createElement('div');
+                
+                if (currentUser && currentUser.role === 'admin') {
+                    var editBtn = document.createElement('button');
+                    editBtn.className = 'btn-action btn-edit';
+                    editBtn.textContent = 'Editar';
+                    editBtn.onclick = function() {
+                        openEditProductModal(index);
+                    };
+                    
+                    var deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'btn-action btn-delete';
+                    deleteBtn.textContent = 'Eliminar';
+                    deleteBtn.onclick = function() {
+                        if (confirm('¿Seguro que deseas eliminar "' + product.title + '"?')) {
+                            products.splice(index, 1);
+                            saveToStorage('xrstore_products', products);
+                            alert('Producto "' + product.title + '" eliminado');
+                            renderProducts();
+                            loadProductsList();
+                        }
+                    };
+                    
+                    actions.appendChild(editBtn);
+                    actions.appendChild(deleteBtn);
+                }
+                
+                header.appendChild(info);
+                header.appendChild(actions);
+                
+                var meta = document.createElement('div');
+                meta.className = 'product-item-meta';
+                
+                var categoryBadge = document.createElement('span');
+                categoryBadge.className = 'product-badge badge-category';
+                categoryBadge.textContent = product.category.toUpperCase();
+                
+                var typeBadge = document.createElement('span');
+                typeBadge.className = 'product-badge badge-type';
+                typeBadge.textContent = product.type;
+                
+                meta.appendChild(categoryBadge);
+                meta.appendChild(typeBadge);
+                
+                if (product.image && product.image.trim() !== '') {
+                    var imageBadge = document.createElement('span');
+                    imageBadge.className = 'product-badge';
+                    imageBadge.style.background = '#2196F3';
+                    imageBadge.style.color = '#fff';
+                    imageBadge.textContent = '📷 Con imagen';
+                    meta.appendChild(imageBadge);
+                }
+                
+                productItem.appendChild(header);
+                productItem.appendChild(meta);
+                productsList.appendChild(productItem);
+            });
+        }
+        
+        // Abrir modal de edición
+        function openEditProductModal(index) {
+            var product = products[index];
+            
+            document.getElementById('editProductIndex').value = index;
+            document.getElementById('editProductTitle').value = product.title;
+            document.getElementById('editProductDescription').value = product.description;
+            document.getElementById('editProductPrice').value = product.price;
+            document.getElementById('editProductImage').value = product.image || '';
+            document.getElementById('editProductCategory').value = product.category;
+            document.getElementById('editProductType').value = product.type;
+            
+            editProductModal.style.display = 'block';
+        }
+        
+        // Renderizar productos al cargar la página
+        renderProducts();
+    </script>
+</body>
+</html>
