@@ -89,7 +89,7 @@
             background: #fff;
             color: #ff0a0a;
             border: none;
-            padding: 0.7rem 2rem;
+            padding: 0.7rem 1.4rem;
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
@@ -563,6 +563,7 @@
                 <li><a href="#productos">Productos</a></li>
                 <li><a href="#contacto">Contacto</a></li>
                 <li><button class="btn-login" id="loginBtn">Iniciar Sesión</button></li>
+                <li><button class="btn-login" id="registerBtn">Registrarse</button></li>
                 <li><button class="btn-admin" id="adminBtn">Panel Admin</button></li>
             </ul>
         </div>
@@ -637,6 +638,25 @@
                     <input type="password" id="password" required>
                 </div>
                 <button type="submit" class="btn-submit">Entrar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Registro -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeRegister">&times;</span>
+            <h2>Crear Cuenta</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label>Usuario</label>
+                    <input type="text" id="regUsername" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="regPassword" required>
+                </div>
+                <button type="submit" class="btn-submit">Registrarse</button>
             </form>
         </div>
     </div>
@@ -926,11 +946,16 @@
         var loginModal = document.getElementById('loginModal');
         var adminModal = document.getElementById('adminModal');
         var editProductModal = document.getElementById('editProductModal');
+        var registerModal = document.getElementById('registerModal');
+        
         var loginBtn = document.getElementById('loginBtn');
         var adminBtn = document.getElementById('adminBtn');
+        var registerBtn = document.getElementById('registerBtn');
+        
         var closeLogin = document.getElementById('closeLogin');
         var closeAdmin = document.getElementById('closeAdmin');
         var closeEditProduct = document.getElementById('closeEditProduct');
+        var closeRegister = document.getElementById('closeRegister');
         
         if (loginBtn) {
             loginBtn.onclick = function() {
@@ -943,6 +968,12 @@
                 adminModal.style.display = 'block';
                 loadUsersList();
                 loadProductsList();
+            };
+        }
+
+        if (registerBtn) {
+            registerBtn.onclick = function() {
+                registerModal.style.display = 'block';
             };
         }
         
@@ -963,6 +994,12 @@
                 editProductModal.style.display = 'none';
             };
         }
+
+        if (closeRegister) {
+            closeRegister.onclick = function() {
+                registerModal.style.display = 'none';
+            };
+        }
         
         window.onclick = function(event) {
             if (event.target == loginModal) {
@@ -973,6 +1010,9 @@
             }
             if (event.target == editProductModal) {
                 editProductModal.style.display = 'none';
+            }
+            if (event.target == registerModal) {
+                registerModal.style.display = 'none';
             }
         };
         
@@ -1000,6 +1040,37 @@
             };
         });
         
+        // Registro
+        var registerForm = document.getElementById('registerForm');
+        if (registerForm) {
+            registerForm.onsubmit = function(e) {
+                e.preventDefault();
+
+                var newUser = document.getElementById('regUsername').value;
+                var newPass = document.getElementById('regPassword').value;
+
+                var exists = users.some(function(u){ return u.username === newUser; });
+                if (exists) {
+                    alert('Ese usuario ya existe, elige otro.');
+                    return false;
+                }
+
+                users.push({
+                    username: newUser,
+                    password: newPass,
+                    role: 'user'
+                });
+
+                alert('Usuario creado exitosamente. Ya puedes iniciar sesión.');
+                registerModal.style.display = 'none';
+
+                document.getElementById('regUsername').value = '';
+                document.getElementById('regPassword').value = '';
+
+                return false;
+            };
+        }
+
         // Login
         var loginForm = document.getElementById('loginForm');
         if (loginForm) {
